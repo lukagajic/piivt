@@ -18,6 +18,25 @@ class CategoryService {
         return lista;
     }
 
+    public async getById(categoryId: number): Promise<CategoryModel | null> {
+        if (categoryId === 1 || categoryId === 2) {
+            if (categoryId === 1) {
+                return {
+                    categoryId: 1,
+                    name: "Category A"
+                }
+            }
+            if (categoryId === 2) {
+                return {
+                    categoryId: 2,
+                    name: "Category B"
+                }
+            }
+        } else {
+            return null;
+        } 
+    }
+
 }
 
 export default CategoryService;
