@@ -33,7 +33,7 @@ class CategoryController {
             return;
         }
 
-        if (data instanceof CategoryController) {
+        if (data instanceof CategoryModel) {
             res.send(data);
             return;
         }
