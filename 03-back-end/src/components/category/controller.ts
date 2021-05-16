@@ -79,6 +79,18 @@ class CategoryController {
     
         res.send(result);
     }
+
+    async deleteById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const id: string = req.params.id;
+        const categoryId: number = +id;
+
+        if (categoryId <= 0) {
+            res.status(400).send("Invalid ID number");
+            return;
+        }
+
+        res.send(await this.categoryService.delete(categoryId));
+    }
 }
 
 export default CategoryController;

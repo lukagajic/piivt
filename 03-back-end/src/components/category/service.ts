@@ -78,6 +78,38 @@ class CategoryService extends BaseService<CategoryModel> {
                 });
         });
     }
+
+    // TODO: Generalizovati ovu metodu u base service!
+    public async delete(categoryId: number): Promise<IErrorResponse> {
+        return new Promise<IErrorResponse>(async resolve => {
+            const sql: string = "DELETE FROM category WHERE category_id = ?";
+
+            this.db.execute(sql, [ categoryId ])
+                .then(async result => {
+                    const deleteInfo: any = result[0];
+                    const deletedRowCount: number = +(deleteInfo?.affectedRows);
+
+                    if (deletedRowCount === 1) {
+                        resolve({
+                            errorCode: 0,
+                            errorMessage: "One record deleted!"
+                        });
+                    } else {
+                        resolve({
+                            errorCode: -1,
+                            errorMessage: "This record could not be deleted!"
+                        }); 
+                    }
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                })
+
+        });
+    }
 }
 
 export default CategoryService;
