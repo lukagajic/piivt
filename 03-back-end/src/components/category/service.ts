@@ -22,13 +22,14 @@ class CategoryService extends BaseService<CategoryModel> {
         return item;
     }
 
-    public async getAll(): Promise<CategoryModel[] | IErrorResponse> {
-        return await this.getAllFromTable<CategoryModelAdapterOptions>("category");
+    public async getAll(
+        options: Partial<CategoryModelAdapterOptions> = { }
+    ): Promise<CategoryModel[] | IErrorResponse> {
+        return await this.getAllFromTable<CategoryModelAdapterOptions>("category", options);
     }
 
-    public async getById(categoryId: number): Promise<CategoryModel | null | IErrorResponse> {
-        return await this.getByIdFromTable<CategoryModelAdapterOptions>("category", categoryId);
-        
+    public async getById(categoryId: number, options: Partial<CategoryModelAdapterOptions> = { }): Promise<CategoryModel | null | IErrorResponse> {
+        return await this.getByIdFromTable<CategoryModelAdapterOptions>("category", categoryId, options);
     }
 
     public async add(data: IAddCategory): Promise<CategoryModel | IErrorResponse > {
@@ -51,7 +52,7 @@ class CategoryService extends BaseService<CategoryModel> {
         });
     }
 
-    public async edit(categoryId: number, data: IEditCategory): Promise<CategoryModel | null | IErrorResponse> {
+    public async edit(categoryId: number, data: IEditCategory, options: Partial<CategoryModelAdapterOptions> = { }): Promise<CategoryModel | null | IErrorResponse> {
         const result = await this.getById(categoryId);
 
         if (result === null) {
@@ -67,7 +68,7 @@ class CategoryService extends BaseService<CategoryModel> {
 
             this.db.execute(sql, [ data.name, categoryId ])
                 .then(async result => {
-                    resolve(await this.getById(categoryId));
+                    resolve(await this.getById(categoryId, options));
                 })
                 .catch(error => {
                     resolve({
