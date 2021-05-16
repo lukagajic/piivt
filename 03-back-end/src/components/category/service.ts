@@ -3,6 +3,7 @@ import IErrorResponse from '../../common/IErrorResponse.inteface';
 import { IAddCategory } from "./dto/AddCategory";
 import BaseService from '../../services/BaseService';
 import IModelAdapterOptions from '../../common/IModelAdapterOptions.interface';
+import { IEditCategory } from "./dto/EditCategory";
 
 class CategoryService extends BaseService<CategoryModel> {
     
@@ -41,6 +42,33 @@ class CategoryService extends BaseService<CategoryModel> {
                         errorMessage: error?.sqlMessage
                     });
                 })
+        });
+    }
+
+    public async edit(categoryId: number, data: IEditCategory): Promise<CategoryModel | null | IErrorResponse> {
+        const result = await this.getById(categoryId);
+
+        if (result === null) {
+            return null;
+        }
+
+        if (!(result instanceof CategoryModel)) {
+            return result;
+        }
+
+        return new Promise<CategoryModel | IErrorResponse>(async resolve => {
+            const sql: string = "UPDATE category SET name = ? WHERE category_id = ?;";
+
+            this.db.execute(sql, [ data.name, categoryId ])
+                .then(async result => {
+                    resolve(await this.getById(categoryId));
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
         });
     }
 }
