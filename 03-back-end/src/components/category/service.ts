@@ -5,9 +5,15 @@ import BaseService from '../../services/BaseService';
 import IModelAdapterOptions from '../../common/IModelAdapterOptions.interface';
 import { IEditCategory } from "./dto/EditCategory";
 
+
+// Iako ovo za sada i nije potrebno, u slucaju buducih prosirenja moze da ostane
+class CategoryModelAdapterOptions implements IModelAdapterOptions {
+
+}
+
 class CategoryService extends BaseService<CategoryModel> {
     
-    protected async adaptModel(row: any, options: Partial<IModelAdapterOptions> = {}): Promise<CategoryModel> {
+    protected async adaptModel(row: any, options: Partial<CategoryModelAdapterOptions> = {}): Promise<CategoryModel> {
         const item: CategoryModel = new CategoryModel();
 
         item.categoryId = +(row?.category_id);
@@ -17,11 +23,11 @@ class CategoryService extends BaseService<CategoryModel> {
     }
 
     public async getAll(): Promise<CategoryModel[] | IErrorResponse> {
-        return await this.getAllFromTable("category");
+        return await this.getAllFromTable<CategoryModelAdapterOptions>("category");
     }
 
     public async getById(categoryId: number): Promise<CategoryModel | null | IErrorResponse> {
-        return await this.getByIdFromTable("category", categoryId);
+        return await this.getByIdFromTable<CategoryModelAdapterOptions>("category", categoryId);
         
     }
 

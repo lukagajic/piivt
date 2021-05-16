@@ -16,7 +16,7 @@ export default abstract class BaseService<ReturnModel extends IModel> {
 
     protected abstract adaptModel(data: any, options: Partial<IModelAdapterOptions>): Promise<ReturnModel>;
 
-    protected async getAllFromTable(tableName: string, options: Partial<IModelAdapterOptions> = {}): Promise<ReturnModel[] | IErrorResponse> {
+    protected async getAllFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, options: Partial<AdapterOptions> = {}): Promise<ReturnModel[] | IErrorResponse> {
         return new Promise<ReturnModel[] | IErrorResponse>(async resolve => {
             const sql: string = `SELECT * FROM ${tableName};`;
 
@@ -44,7 +44,7 @@ export default abstract class BaseService<ReturnModel extends IModel> {
         });
     }
 
-    protected async getByIdFromTable(tableName: string, id: number, options: Partial<IModelAdapterOptions> = {}): Promise<ReturnModel | null | IErrorResponse> {
+    protected async getByIdFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, id: number, options: Partial<AdapterOptions> = {}): Promise<ReturnModel | null | IErrorResponse> {
         return new Promise<ReturnModel | null | IErrorResponse>(async resolve => {
             const sql: string = `SELECT * FROM ${tableName} WHERE ${tableName}_id = ?;`;
 
@@ -73,7 +73,7 @@ export default abstract class BaseService<ReturnModel extends IModel> {
         });
     }
 
-    protected async getAllByFieldNameFromTable(tableName: string, fieldName: string, fieldValue: any): Promise<ReturnModel[] | IErrorResponse> {
+    protected async getAllByFieldNameFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, fieldName: string, fieldValue: any, options: Partial<AdapterOptions> = {}): Promise<ReturnModel[] | IErrorResponse> {
         return new Promise<ReturnModel[] | IErrorResponse>(async resolve => {
             let sql: string = `SELECT * FROM ${tableName} WHERE ${fieldName} = ?;`;
             
@@ -90,7 +90,7 @@ export default abstract class BaseService<ReturnModel extends IModel> {
                     if (Array.isArray(rows)) {
                         for (const row of rows) {
                             lista.push(
-                                await this.adaptModel(row, {})
+                                await this.adaptModel(row, options)
                             );
                         }
                     }        
