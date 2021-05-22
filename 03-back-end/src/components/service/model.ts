@@ -1,6 +1,5 @@
-import IModel from '../../../dist/common/IModel.interface';
-import CategoryModel from '../../../dist/components/category/model';
-
+import IModel from '../../common/IModel.interface';
+import CategoryModel from '../category/model';
 class ServiceModel implements IModel {
     serviceId: number;
     name: string;

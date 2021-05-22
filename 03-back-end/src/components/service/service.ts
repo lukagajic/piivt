@@ -1,12 +1,13 @@
 import IModelAdapterOptionsInterface from '../../common/IModelAdapterOptions.interface';
-import BaseService from '../../services/BaseService';
+import BaseService from '../../common/BaseService';
 import ServiceModel from './model';
 import * as mysql2 from 'mysql2/promise';
 import CategoryService from '../category/service';
-import CategoryModel from '../../../dist/components/category/model';
-import IErrorResponse from '../../../dist/common/IErrorResponse.inteface';
+
 import { IAddService } from './dto/AddService';
 import { IEditService } from './dto/EditService';
+import CategoryModel from '../category/model';
+import IErrorResponse from '../../common/IErrorResponse.inteface';
 
 class ServiceModelAdapterOptions implements IModelAdapterOptionsInterface {
     loadCategory: boolean = false;
@@ -14,13 +15,6 @@ class ServiceModelAdapterOptions implements IModelAdapterOptionsInterface {
 
 // Malo je cudno ime klase, ali takav je naziv entiteta - usluga (service)
 class ServiceService extends BaseService<ServiceModel> {
-    private categoryService: CategoryService;
-
-    constructor(db: mysql2.Connection) {
-        super(db);
-
-        this.categoryService = new CategoryService(this.db);
-    }
 
     protected async adaptModel(data: any, options: Partial<ServiceModelAdapterOptions>): Promise<ServiceModel> {
         const item: ServiceModel = new ServiceModel();
@@ -34,7 +28,7 @@ class ServiceService extends BaseService<ServiceModel> {
         item.categoryId = +(data?.category_id);
 
         if (options.loadCategory && item.categoryId) {
-            const result = await this.categoryService.getById(item.categoryId); 
+            const result = await this.services.categoryService.getById(item.categoryId); 
             
             // TODO: razresiti zasto nije instanca CategoryModel-a
             //if (result instanceof CategoryModel) {
@@ -49,6 +43,7 @@ class ServiceService extends BaseService<ServiceModel> {
         options: Partial<ServiceModelAdapterOptions> = { }
     ): Promise<ServiceModel[] | IErrorResponse> {
         return await this.getAllFromTable<ServiceModelAdapterOptions>("service", options);
+
     }
 
     public async getById(serviceId: number, options: Partial<ServiceModelAdapterOptions> = { }): Promise<ServiceModel | null | IErrorResponse> {

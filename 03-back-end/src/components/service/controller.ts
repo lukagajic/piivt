@@ -1,24 +1,20 @@
-import ServiceService from './service';
 import * as express from 'express';
 import ServiceModel from './model';
-import IErrorResponse from '../../../dist/common/IErrorResponse.inteface';
 import { IAddService, IAddServiceValidator } from './dto/AddService';
 import { IEditService, IEditServiceValidator } from './dto/EditService';
+import IErrorResponse from '../../common/IErrorResponse.inteface';
+import BaseController from '../../common/BaseController';
 
-export default class ServiceController {
-    private serviceService: ServiceService;
-
-    constructor(serviceService: ServiceService) {
-        this.serviceService = serviceService;
-    }
-
+export default class ServiceController extends BaseController {
+    
     async getAll(req: express.Request, res: express.Response, next: express.NextFunction) {
-        res.send(await this.serviceService.getAll({
+        res.send(await this.services.serviceService.getAll({
             loadCategory: true
         }));
     }
 
     async getById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        
         const id: string = req.params.id;
 
         const serviceId: number = +id;
@@ -28,7 +24,7 @@ export default class ServiceController {
             return;
         }
 
-        const data: ServiceModel | null | IErrorResponse = await this.serviceService.getById(serviceId, {
+        const data: ServiceModel | null | IErrorResponse = await this.services.serviceService.getById(serviceId, {
             loadCategory: true
         });
 
@@ -48,7 +44,7 @@ export default class ServiceController {
     async getAllInCategory(req: express.Request, res: express.Response, next: express.NextFunction) {
         const categoryId: number = +(req.params.cid);
 
-        res.send(await this.serviceService.getAllByCategoryId(categoryId));
+        res.send(await this.services.serviceService.getAllByCategoryId(categoryId));
     }
 
     async add(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -59,7 +55,7 @@ export default class ServiceController {
             return;
         }
 
-        const result: ServiceModel | IErrorResponse =  await this.serviceService.add(data as IAddService, {
+        const result: ServiceModel | IErrorResponse =  await this.services.serviceService.add(data as IAddService, {
             loadCategory: true
         });
         
@@ -82,7 +78,7 @@ export default class ServiceController {
             return;
         }
 
-        const result: ServiceModel | IErrorResponse = await this.serviceService.edit(serviceId, data as IEditService, {
+        const result: ServiceModel | IErrorResponse = await this.services.serviceService.edit(serviceId, data as IEditService, {
             loadCategory: true
         });
 
@@ -103,6 +99,6 @@ export default class ServiceController {
             return;
         }
 
-        res.send(await this.serviceService.delete(serviceId));
+        res.send(await this.services.serviceService.delete(serviceId));
     }
 }

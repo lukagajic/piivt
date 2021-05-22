@@ -1,19 +1,14 @@
 import * as express from 'express';
-import CategoryService from './service';
 import CategoryModel from './model';
 import IErrorResponse from '../../common/IErrorResponse.inteface';
 import { IAddCategory, IAddCategoryValidator } from './dto/AddCategory';
 import { IEditCategory, IEditCategoryValidator } from './dto/EditCategory';
+import BaseController from '../../common/BaseController';
 
-class CategoryController {
-    private categoryService: CategoryService;
-    
-    constructor(categoryService: CategoryService) {
-        this.categoryService = categoryService;
-    }
+class CategoryController extends BaseController {    
 
     async getAll(req: express.Request, res: express.Response, next: express.NextFunction) {
-        res.send(await this.categoryService.getAll());
+        res.send(await this.services.categoryService.getAll());
     }
     
     async getById(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -26,7 +21,7 @@ class CategoryController {
             return;
         }
 
-        const data: CategoryModel | null | IErrorResponse = await this.categoryService.getById(categoryId);
+        const data: CategoryModel | null | IErrorResponse = await this.services.categoryService.getById(categoryId);
 
         if (data === null) {
             res.sendStatus(404);
@@ -49,7 +44,7 @@ class CategoryController {
             return;
         }
 
-        const result: CategoryModel | IErrorResponse =  await this.categoryService.add(data as IAddCategory);
+        const result: CategoryModel | IErrorResponse =  await this.services.categoryService.add(data as IAddCategory);
         
         res.send(result);
     }
@@ -70,7 +65,7 @@ class CategoryController {
             return;
         }
 
-        const result: CategoryModel | IErrorResponse = await this.categoryService.edit(categoryId, data as IEditCategory);
+        const result: CategoryModel | IErrorResponse = await this.services.categoryService.edit(categoryId, data as IEditCategory);
 
         if (result === null) {
             res.sendStatus(404);
@@ -89,7 +84,7 @@ class CategoryController {
             return;
         }
 
-        res.send(await this.categoryService.delete(categoryId));
+        res.send(await this.services.categoryService.delete(categoryId));
     }
 }
 

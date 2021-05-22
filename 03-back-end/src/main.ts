@@ -6,6 +6,8 @@ import * as mysql2 from "mysql2/promise";
 import IApplicationResources from './common/IApplicationResources.interface';
 import Router from './router';
 import ServiceRouter from './components/service/router';
+import CategoryService from './components/category/service';
+import ServiceService from './components/service/service';
 
 async function main() {
     const application: express.Application = express();
@@ -24,11 +26,15 @@ async function main() {
             timezone: Config.database.timezone,
             supportBigNumbers: true
         })
-    }
+    }    
     
     resources.databaseConnection.connect();
 
-    
+    resources.services = {
+        categoryService: new CategoryService(resources),
+        serviceService: new ServiceService(resources)
+    };
+
     application.use(Config.server.static.route, express.static(Config.server.static.path, {
         index: Config.server.static.index,
         cacheControl: Config.server.static.cacheControl,

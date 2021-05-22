@@ -1,23 +1,29 @@
 import CategoryModel from "./model";
 import IErrorResponse from '../../common/IErrorResponse.inteface';
 import { IAddCategory } from "./dto/AddCategory";
-import BaseService from '../../services/BaseService';
+import BaseService from '../../common/BaseService';
 import IModelAdapterOptions from '../../common/IModelAdapterOptions.interface';
 import { IEditCategory } from "./dto/EditCategory";
+import ServiceModel from '../service/model';
 
 
 // Iako ovo za sada i nije potrebno, u slucaju buducih prosirenja moze da ostane
 class CategoryModelAdapterOptions implements IModelAdapterOptions {
-
+    loadServices: boolean;
 }
 
 class CategoryService extends BaseService<CategoryModel> {
+    
     
     protected async adaptModel(row: any, options: Partial<CategoryModelAdapterOptions> = {}): Promise<CategoryModel> {
         const item: CategoryModel = new CategoryModel();
 
         item.categoryId = +(row?.category_id);
         item.name = row?.name;
+
+        if (options.loadServices) {
+            item.services = await this.services.serviceService.getAllByCategoryId(item.categoryId) as ServiceModel[];
+        }
         
         return item;
     }
