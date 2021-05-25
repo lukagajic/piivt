@@ -10,6 +10,8 @@ import CategoryService from './components/category/service';
 import ServiceService from './components/service/service';
 import DoctorService from './components/doctor/service';
 import DoctorRouter from './components/doctor/router';
+import PatientService from './components/patient/service';
+import PatientRouter from './components/patient/router';
 
 async function main() {
     const application: express.Application = express();
@@ -35,7 +37,8 @@ async function main() {
     resources.services = {
         categoryService: new CategoryService(resources),
         serviceService: new ServiceService(resources),
-        doctorService: new DoctorService(resources)
+        doctorService: new DoctorService(resources),
+        patientService: new PatientService(resources)
     };
 
     application.use(Config.server.static.route, express.static(Config.server.static.path, {
@@ -49,9 +52,8 @@ async function main() {
     Router.setupRoutes(application, resources, [
         new CategoryRouter(),
         new ServiceRouter(),
-        new DoctorRouter(
-            
-        )
+        new DoctorRouter(),
+        new PatientRouter()
     ]);
     
     application.use((req, res) => {
