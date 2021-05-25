@@ -1,7 +1,9 @@
 import CategoryService from '../components/category/service';
 import ServiceService from '../components/service/service';
+import DoctorService from '../components/doctor/service';
 
 export default interface IServices {
     categoryService: CategoryService,
-    serviceService: ServiceService
+    serviceService: ServiceService,
+    doctorService: DoctorService
 }

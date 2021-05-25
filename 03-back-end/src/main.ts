@@ -8,6 +8,8 @@ import Router from './router';
 import ServiceRouter from './components/service/router';
 import CategoryService from './components/category/service';
 import ServiceService from './components/service/service';
+import DoctorService from './components/doctor/service';
+import DoctorRouter from './components/doctor/router';
 
 async function main() {
     const application: express.Application = express();
@@ -32,7 +34,8 @@ async function main() {
 
     resources.services = {
         categoryService: new CategoryService(resources),
-        serviceService: new ServiceService(resources)
+        serviceService: new ServiceService(resources),
+        doctorService: new DoctorService(resources)
     };
 
     application.use(Config.server.static.route, express.static(Config.server.static.path, {
@@ -45,7 +48,10 @@ async function main() {
     
     Router.setupRoutes(application, resources, [
         new CategoryRouter(),
-        new ServiceRouter()
+        new ServiceRouter(),
+        new DoctorRouter(
+            
+        )
     ]);
     
     application.use((req, res) => {
