@@ -7,9 +7,10 @@ export default class AdministratorRouter implements IRouter {
     public setupRoutes(application: express.Application, resources: IApplicationResources) {
         const administratorController: AdministratorController = new AdministratorController(resources);
 
-        application.get("/administrator",     administratorController.getAll.bind(administratorController));
-        application.get("/administrator/:id", administratorController.getById.bind(administratorController));
-        application.post("/administrator",    administratorController.add.bind(administratorController));
-        application.put("/administrator/:id", administratorController.edit.bind(administratorController));
+        application.get("/administrator",        administratorController.getAll.bind(administratorController));
+        application.get("/administrator/:id",    administratorController.getById.bind(administratorController));
+        application.post("/administrator",       administratorController.add.bind(administratorController));
+        application.put("/administrator/:id",    administratorController.edit.bind(administratorController));
+        application.delete("/administrator/:id", administratorController.deleteById.bind(administratorController));
     }
 }

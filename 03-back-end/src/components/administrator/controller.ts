@@ -73,6 +73,18 @@ class AdministratorController extends BaseController {
     
         res.send(result);
     }
+
+    async deleteById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const id: string = req.params.id;
+        const administratorId: number = +id;
+
+        if (administratorId <= 0) {
+            res.status(400).send("Invalid ID number");
+            return;
+        }
+
+        res.send(await this.services.administratorService.delete(administratorId));
+    }
 }
 
 export default AdministratorController;
