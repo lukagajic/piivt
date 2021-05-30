@@ -9,7 +9,7 @@ import { IEditDoctor } from './dto/EditDoctor';
 
 
 class DoctorModelAdapterOptions implements IModelAdapterOptions {
-    showPassword: false
+    showPassword: boolean = false;
 }
 
 class DoctorService extends BaseService<DoctorModel> {
@@ -22,7 +22,7 @@ class DoctorService extends BaseService<DoctorModel> {
         item.email = data?.email;
         item.username = data?.username;
 
-        if (options.showPassword === false) {
+        if (options.showPassword === true) {
             item.passwordHash = data?.password_hash
         } else {
             item.passwordHash = undefined
@@ -46,6 +46,16 @@ class DoctorService extends BaseService<DoctorModel> {
 
     public async getById(doctorId: number, options: Partial<DoctorModelAdapterOptions> = { }): Promise<DoctorModel | null | IErrorResponse> {
         return await this.getByIdFromTable<DoctorModelAdapterOptions>("doctor", doctorId, options);
+    }
+
+    public async getByEmail(email: string, options: Partial<DoctorModelAdapterOptions> = { }): Promise<DoctorModel | null> {
+        const doctors: DoctorModel[] | IErrorResponse = await this.getAllByFieldNameFromTable<DoctorModelAdapterOptions>("doctor", "email", email, options);
+        
+        if (!Array.isArray(doctors) || doctors.length === 0) {
+            return null;
+        }
+
+        return doctors[0];
     }
 
     public async add(data: IAddDoctor): Promise<DoctorModel | IErrorResponse > {

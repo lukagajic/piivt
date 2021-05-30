@@ -16,6 +16,7 @@ import AdministratorService from './components/administrator/service';
 import AdministratorRouter from './components/administrator/router';
 import VisitService from './components/visit/service';
 import VisitRouter from './components/visit/router';
+import AuthRouter from './components/auth/router';
 
 async function main() {
     const application: express.Application = express();
@@ -61,7 +62,8 @@ async function main() {
         new DoctorRouter(),
         new PatientRouter(),
         new AdministratorRouter(),
-        new VisitRouter()
+        new VisitRouter(),
+        new AuthRouter()
     ]);
     
     application.use((req, res) => {

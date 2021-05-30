@@ -131,6 +131,15 @@ class AdministratorService extends BaseService<AdministratorModel> {
         });
     }
 
+    public async getByUsername(username: string, options: Partial<AdministratorModelAdapterOptions> = {}): Promise<AdministratorModel | null> {
+        const administrators = await this.getAllByFieldNameFromTable("administrator", "username", username, options);
+
+        if (!Array.isArray(administrators) || administrators.length === 0) {
+            return null;
+        }
+
+        return administrators[0];
+    }
 }
 
 export default AdministratorService;
