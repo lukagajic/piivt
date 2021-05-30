@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 
 class BasePageProperties {
     sidebar?: JSX.Element;
+    match?: any;
 }
 
 export { BasePageProperties };
