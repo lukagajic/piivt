@@ -37,6 +37,7 @@ export default interface IConfig {
     },
     auth: {
         doctor: TokenOptions,
-        administrator: TokenOptions
+        administrator: TokenOptions,
+        allowRequestsEvenWithoutValidTokens: boolean;
     }
 }

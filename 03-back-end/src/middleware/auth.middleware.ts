@@ -13,6 +13,10 @@ interface TokenValidationInfo {
 export default class AuthMiddleware {
 
     private static verifyAuthToken(req: express.Request, res: express.Response, next: express.NextFunction, allowedRoles: UserRole[]) {
+        if (Config.auth.allowRequestsEvenWithoutValidTokens) {
+            return next();
+        }
+        
         if (typeof req.headers.authorization !== "string") {
             return res.status(401).send("No auth token specified");
         }
