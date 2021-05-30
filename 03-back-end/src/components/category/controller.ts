@@ -8,7 +8,9 @@ import BaseController from '../../common/BaseController';
 class CategoryController extends BaseController {    
 
     async getAll(req: express.Request, res: express.Response, next: express.NextFunction) {
-        res.send(await this.services.categoryService.getAll());
+        res.send(await this.services.categoryService.getAll({
+            loadServices: true
+        }));
     }
     
     async getById(req: express.Request, res: express.Response, next: express.NextFunction) {
