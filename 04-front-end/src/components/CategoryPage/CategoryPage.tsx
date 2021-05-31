@@ -1,8 +1,8 @@
 import React from "react";
 import BasePage from '../BasePage/BasePage';
-import axios from "axios";
 import CategoryModel from '../../../../03-back-end/src/components/category/model';
 import { Link } from "react-router-dom";
+import CategoryService from "../../services/CategoryService";
 
 class CategoryPageState {
     categories: CategoryModel[] = [];
@@ -25,31 +25,22 @@ export default class CategoryPage extends BasePage<{}> {
     }
 
     private getCategories() {
-        axios({
-            method: "get",
-            baseURL: "http://localhost:9001",
-            url: "/category",
-            timeout: 10000,
-            headers: {
-                Authorization: "Bearer FAKE-TOKEN"
-            },
-            maxRedirects: 0
-        })
-        .then(res => {
-            if (!Array.isArray(res.data)) {
-                throw new Error("Invalid data received");
-            }
-            this.setState({
-                errorMessage: "",
-                categories: res.data
+        CategoryService.getAll()
+            .then(categories => {
+                if (categories.length === 0) {                   
+                    return this.setState({
+                        categories: [],
+                        errorMessage: "Nije moguće učitati kategorije usluga klinike"
+                    });
+                }
+
+                this.setState({
+                    errorMessage: "",
+                    categories: categories
+                });
             });
-        })
-        .catch(err => {
-            this.setState({
-                categories: [],
-                errorMessage: "Nije moguće učitati kategorije usluga klinike"
-            })
-        });
+
+        
     }
 
     renderMain(): JSX.Element {
