@@ -9,7 +9,6 @@ interface IEditPatient {
     personalIdentityNumber: string
     phoneNumber: string;
     address: string;
-    isActive: boolean;
 }
 
 const ajv = new Ajv();
@@ -58,13 +57,10 @@ const IEditPatientValidator = ajv.compile({
             type: "string",
             minLength: 10,
             maxLength: 64 * 1024,
-        },       
-        isActive: {
-            type: "boolean"
         }
     },
     required: [
-        "forename", "surname", "bornAt", "gender", "email", "personalIdentityNumber", "phoneNumber", "address", "isActive"
+        "forename", "surname", "bornAt", "gender", "email", "personalIdentityNumber", "phoneNumber", "address"
     ],
     additionalProperties: false
 });

@@ -53,8 +53,7 @@ class PatientService extends BaseService<PatientModel> {
                     email = ?,
                     personal_identity_number = ?,
                     phone_number = ?,
-                    address = ?,
-                    is_active = ?;
+                    address = ?;
             `;
 
             this.db.execute(sql, [
@@ -65,8 +64,7 @@ class PatientService extends BaseService<PatientModel> {
                 data.email,
                 data.personalIdentityNumber,
                 data.phoneNumber,
-                data.address,
-                data.isActive === true ? 1 : 0
+                data.address
              ])
                 .then(async result => {
                     const insertInfo: any = result[0];
@@ -106,8 +104,7 @@ class PatientService extends BaseService<PatientModel> {
                     email = ?,
                     personal_identity_number = ?,
                     phone_number = ?,
-                    address = ?,
-                    is_active = ?
+                    address = ?
                 WHERE
                     patient_id = ?;
             `;
@@ -121,7 +118,6 @@ class PatientService extends BaseService<PatientModel> {
                 data.personalIdentityNumber,
                 data.phoneNumber,
                 data.address,
-                data.isActive === true ? 1 : 0,
                 patientId
              ])
             .then(async result => {
