@@ -43,8 +43,31 @@ class VisitService extends BaseService<VisitModel> {
         if (options.loadServices === true) {
             item.services = await this.getAllServicesByVisitId(item.visitId);
         }
+
+        item.totalPrice = await this.calculateTotalPrice(item);
         
         return item;
+    }
+
+    private async calculateTotalPrice(visit: VisitModel): Promise<number> {
+        const patient: PatientModel = await this.services.patientService.getById(visit.patientId) as PatientModel;
+        const patientAge: number = this.calculatePatientAge(patient.bornAt.getDay(), patient.bornAt.getMonth() ,patient.bornAt.getFullYear());
+        
+        const services = await this.getAllServicesByVisitId(visit.visitId);
+        
+        let price: number = 0;
+
+        for (const service of services) {
+            if (patientAge <= 15) {
+                price += service.service.priceForChildren;
+            } else if (patientAge >= 65) {
+                price += service.service.priceForSeniors;
+            } else {
+                price += service.service.price;
+            }
+        }
+
+        return price;
     }
 
 
@@ -355,6 +378,25 @@ class VisitService extends BaseService<VisitModel> {
                 })
         });
     }
+
+    private calculatePatientAge(birthDay: number, birthMonth: number, birthYear: number) {
+        let currentDate: Date = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+        let currentDay = currentDate.getDate();
+        let calculatedAge = currentYear - birthYear;
+      
+        if (currentMonth < birthMonth - 1) {
+          calculatedAge--;
+        }
+
+        if (birthMonth - 1 == currentMonth && currentDay < birthDay) {
+          calculatedAge--;
+        }
+
+        return calculatedAge;
+    }    
+    
 }
 
 export default VisitService;

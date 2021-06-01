@@ -21,6 +21,7 @@ class VisitModel implements IModel {
     editorDoctor: DoctorModel;
     services: Service[];
     isActive: boolean;
+    totalPrice: number;
 }
 
 export default VisitModel;
