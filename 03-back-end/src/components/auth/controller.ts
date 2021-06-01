@@ -8,6 +8,7 @@ import * as jwt from "jsonwebtoken";
 import Config from '../../config/dev';
 import { IAdministratorLogin, IAdministratorLoginValidator } from './dto/IAdministratorLogin';
 import AdministratorModel from '../administrator/model';
+import * as express from 'express';
 
 export default class AuthController extends BaseController {
     async doctorLogin(req: Request, res: Response, next: NextFunction) {
@@ -24,33 +25,15 @@ export default class AuthController extends BaseController {
         const userAgent = req.headers["user-agent"];
 
         if (doctor === null) {
-            const isLoginAttemptInserted: boolean = await this.services.authService.insertLoginRecordAttempt(
-                data.email,
-                ipAdress,
-                userAgent,
-                true,
-                "Loše uneto korisničko ime"
-            );
+
+            await this.insertLoginAttempt(req, res, data.email, false, "Loše uneto korisničko ime");
             
-            if (isLoginAttemptInserted === false) {
-                return res.status(500).send("Greška pri logovanju na sistem!");
-            }
             return res.sendStatus(404);
         }
 
         if (!bcrypt.compareSync(data.password, doctor.passwordHash)) {
             // Anti-brute-force mera: sacekati 1s pre slanja odgovora da lozinka nije dobra
-            const isLoginAttemptInserted: boolean = await this.services.authService.insertLoginRecordAttempt(
-                data.email,
-                ipAdress,
-                userAgent,
-                false,
-                "Lоše uneta lozinka"
-            );
-            
-            if (isLoginAttemptInserted === false) {
-                return res.status(500).send("Greška pri procesu logovanja na sistem!");
-            }
+            await this.insertLoginAttempt(req, res, data.email, false, "Loše uneta lozinka");
 
             await new Promise(resolve => setTimeout(resolve, 1000));
             return res.status(403).send("Uneta je neispravna lozinka za doktora");
@@ -88,17 +71,7 @@ export default class AuthController extends BaseController {
             }
         );
 
-        const isLoginAttemptInserted: boolean = await this.services.authService.insertLoginRecordAttempt(
-            data.email,
-            ipAdress,
-            userAgent,
-            true,
-            "Uspešno logovanje na sistem"
-        );
-        
-        if (isLoginAttemptInserted === false) {
-            return res.status(500).send("Greška pri logovanju na sistem!");
-        }
+        await this.insertLoginAttempt(req, res, data.email, true, "Uspešno logovanje na sistem");
 
         res.send({
             authToken: authToken,
@@ -165,5 +138,22 @@ export default class AuthController extends BaseController {
             authToken: authToken,
             refreshToken: refreshToken
         });
+    }
+
+    private async insertLoginAttempt(req: express.Request, res: express.Response, email: string, isSuccessful: boolean, message: string) {
+        const ipAdress = req.ip;
+        const userAgent = req.headers["user-agent"];
+
+        const isLoginAttemptInserted: boolean = await this.services.authService.insertLoginRecordAttempt(
+            email,
+            ipAdress,
+            userAgent,
+            isSuccessful,
+            message
+        );
+        
+        if (isLoginAttemptInserted === false) {
+            return res.status(500).send("Greška pri logovanju na sistem!");
+        }
     }
 }
