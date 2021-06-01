@@ -20,6 +20,7 @@ class VisitModel implements IModel {
     doctor: DoctorModel;
     editorDoctor: DoctorModel;
     services: Service[];
+    isActive: boolean;
 }
 
 export default VisitModel;

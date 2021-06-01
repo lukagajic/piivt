@@ -26,6 +26,7 @@ class VisitService extends BaseService<VisitModel> {
         item.patientId = +(data?.patient_id);
         item.doctorId = +(data?.doctor_id);
         item.editorDoctorId = +(data?.editor__doctor_id);
+        item.isActive = +(data?.is_active) === 1;
 
         if (options.loadPatient === true) {
             item.patient = await this.services.patientService.getById(item.patientId) as PatientModel;
