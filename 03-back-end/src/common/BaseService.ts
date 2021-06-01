@@ -51,6 +51,34 @@ export default abstract class BaseService<ReturnModel extends IModel> {
         });
     }
 
+    protected async getAllActiveFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, options: Partial<AdapterOptions> = {}): Promise<ReturnModel[] | IErrorResponse> {
+        return new Promise<ReturnModel[] | IErrorResponse>(async resolve => {
+            const sql: string = `SELECT * FROM ${tableName} WHERE is_active = 1;`;
+
+            this.db.execute(sql)
+                .then(async result => {
+                    const rows = result[0];
+
+                    const lista: ReturnModel[] = [];
+
+                    if (Array.isArray(rows)) {
+                        for (const row of rows) {
+                            lista.push(
+                                await this.adaptModel(row, options)
+                            );
+                        }
+                    }        
+                    resolve(lista);
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
+        });
+    }
+
     protected async getByIdFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, id: number, options: Partial<AdapterOptions> = {}): Promise<ReturnModel | null | IErrorResponse> {
         return new Promise<ReturnModel | null | IErrorResponse>(async resolve => {
             const sql: string = `SELECT * FROM ${tableName} WHERE ${tableName}_id = ?;`;
