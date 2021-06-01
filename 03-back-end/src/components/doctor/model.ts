@@ -18,6 +18,7 @@ class DoctorModel implements IModel {
     gender: "male" | "female";
     title: "magistar" | "specijalizant" | "doktor" | "docent" | "primarijus";
     phoneNumber: string;
+    isActive: boolean;
 }
 
 export default DoctorModel;

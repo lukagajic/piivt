@@ -32,6 +32,7 @@ class DoctorService extends BaseService<DoctorModel> {
         item.gender = data?.gender;
         item.title = data?.title;
         item.phoneNumber = data?.phone_number;
+        item.isActive = +(data?.is_active) === 1;
 
         // Kasnije cemo dodati i opcije
 
