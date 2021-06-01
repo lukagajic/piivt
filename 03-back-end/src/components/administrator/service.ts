@@ -28,6 +28,12 @@ class AdministratorService extends BaseService<AdministratorModel> {
         return await this.getAllFromTable<AdministratorModelAdapterOptions>("administrator", options) as AdministratorModel[];
     }
 
+    public async getAllActive(
+        options: Partial<AdministratorModelAdapterOptions> = { }
+    ): Promise<AdministratorModel[] | IErrorResponse> {
+        return await this.getAllActiveFromTable("administrator");
+    }
+
     public async getById(administratorId: number, options: Partial<AdministratorModelAdapterOptions> = { }): Promise<AdministratorModel | null | IErrorResponse> {
         return await this.getByIdFromTable<AdministratorModelAdapterOptions>("administrator", administratorId, options);
     }

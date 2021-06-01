@@ -7,7 +7,7 @@ import { IEditAdministrator, IEditAdministratorValidator } from './dto/EditAdmin
 
 class AdministratorController extends BaseController {
     async getAll(req: express.Request, res: express.Response, next: express.NextFunction) {
-        res.send(await this.services.administratorService.getAll());
+        res.send(await this.services.administratorService.getAllActive());
     }
 
     async getById(req: express.Request, res: express.Response, next: express.NextFunction) {
