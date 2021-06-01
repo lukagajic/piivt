@@ -153,6 +153,10 @@ class DoctorService extends BaseService<DoctorModel> {
             });
         });
     }
+
+    public async delete(doctorId: number): Promise<IErrorResponse> {
+        return await this.deleteByIdFromTable("doctor", doctorId);
+    }
 }
 
 export default DoctorService;
