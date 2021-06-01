@@ -9,6 +9,7 @@ import Config from '../../config/dev';
 import { IAdministratorLogin, IAdministratorLoginValidator } from './dto/IAdministratorLogin';
 import AdministratorModel from '../administrator/model';
 import * as express from 'express';
+import { IRefreshToken, IRefreshTokenValidator } from './dto/IRefreshToken';
 
 export default class AuthController extends BaseController {
     async doctorLogin(req: Request, res: Response, next: NextFunction) {
@@ -154,6 +155,52 @@ export default class AuthController extends BaseController {
         
         if (isLoginAttemptInserted === false) {
             return res.status(500).send("Greška pri logovanju na sistem!");
+        }
+    }
+
+    async doctorRefresh(req: express.Request, res: express.Response, next: express.NextFunction) {
+        this.refreshTokenByRole("doctor")(req, res);
+    }
+
+    async administratorRefresh(req: express.Request, res: express.Response, next: express.NextFunction) {
+        this.refreshTokenByRole("administrator")(req, res);
+    }
+
+    private refreshTokenByRole(role: "doctor" | "administrator"): (req: express.Request, res: express.Response) => void {
+        return (req: express.Request, res: express.Response) => {
+            if (!IRefreshTokenValidator(req.body)) {
+                return res.status(400).send(IRefreshTokenValidator.errors);
+            }
+    
+            const data: IRefreshToken = req.body as IRefreshToken;
+            const tokenString: string = data.refreshToken;
+    
+            try {
+                const existingData = jwt.verify(tokenString, Config.auth[role].auth.public) as ITokenData;
+                
+                const newTokenData: ITokenData = {
+                    id: existingData.id,
+                    identity: existingData.identity,
+                    role: existingData.role
+                };
+
+                const authToken = jwt.sign(
+                    newTokenData,
+                    Config.auth[role].auth.private,
+                    {
+                        algorithm: Config.auth[role].algorithm,
+                        issuer: Config.auth[role].issuer,
+                        expiresIn: Config.auth[role].auth.duration
+                    }
+                );
+    
+                res.send({
+                    authToken: authToken,
+                    refreshToken: null
+                });
+            } catch (e) {
+                return res.status(400).send("Invalid refresh token: " + e?.message);
+            }
         }
     }
 }

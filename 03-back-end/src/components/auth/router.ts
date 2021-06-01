@@ -9,5 +9,8 @@ export default class AuthRouter implements IRouter {
 
         application.post("/auth/doctor/login",        authController.doctorLogin.bind(authController));
         application.post("/auth/administrator/login", authController.administratorLogin.bind(authController));
+
+        application.post("/auth/doctor/refresh", authController.doctorRefresh.bind(authController));
+        application.post("/auth/administrator/refresh", authController.administratorRefresh.bind(authController));
     }
 }
