@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { AppConfiguration } from '../config/app.config';
+import EventRegister from './EventRegister';
 
 type ApiMethod = "get" | "post" | "put" | "delete";
 type ApiRole = "doctor" | "administrator";
@@ -35,6 +36,8 @@ export default function api(
                 const newToken: string | null = await refreshToken(role);
 
                 if (newToken === null) {
+                    EventRegister.emit("AUTH_EVENT", "force_login");
+
                     return resolve({
                         status: "login",
                         data: null
@@ -52,6 +55,8 @@ export default function api(
                 )
                 .then(res => resolve(res))
                 .catch(err => {
+                    EventRegister.emit("AUTH_EVENT", "force_login");
+
                     return resolve({
                         status: "login",
                         data: null
@@ -62,12 +67,16 @@ export default function api(
             }
 
             if (err?.response?.status === 401) {
+                EventRegister.emit("AUTH_EVENT", "force_login");
+
                 return resolve({
                     status: "login",
                     data: null
                 });
             }
             if (err?.response?.status === 403) {
+                EventRegister.emit("AUTH_EVENT", "force_login");
+                
                 return resolve({
                     status: "login",
                     data: "Pogrešna uloga korisnika"
@@ -76,7 +85,7 @@ export default function api(
 
             resolve({
                 status: "error",
-                data: "" + err?.response
+                data: err?.response
             });
         })
     });

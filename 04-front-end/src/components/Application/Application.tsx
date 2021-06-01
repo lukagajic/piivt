@@ -6,6 +6,7 @@ import TopMenu from '../TopMenu/TopMenu';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import HomePage from '../HomePage/HomePage';
 import CategoryPage from '../CategoryPage/CategoryPage';
+import DoctorLogin from '../DoctorLogin/DoctorLogin';
 
 function Application() {
   return (
@@ -27,6 +28,7 @@ function Application() {
             <Route path="/profile">
               Moj nalog
             </Route>
+            <Route path="/doctor/login" component={DoctorLogin} />
           </Switch>
         </div>
 
