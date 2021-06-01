@@ -26,6 +26,7 @@ class ServiceService extends BaseService<ServiceModel> {
         item.priceForChildren = +(data?.price_for_children);
         item.priceForSeniors = +(data?.price_for_seniors);
         item.categoryId = +(data?.category_id);
+        item.isActive = +(data?.is_active) === 1;
 
         if (options.loadCategory && item.categoryId) {
             const result = await this.services.categoryService.getById(item.categoryId); 

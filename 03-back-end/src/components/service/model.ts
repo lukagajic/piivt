@@ -9,6 +9,7 @@ class ServiceModel implements IModel {
     priceForSeniors: number;
     categoryId: number;
     category: CategoryModel | null = null;
+    isActive: boolean;
 }
 
 export default ServiceModel;
