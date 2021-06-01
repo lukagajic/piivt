@@ -80,6 +80,43 @@ export default abstract class BaseService<ReturnModel extends IModel> {
         });
     }
 
+    protected async deleteByIdFromTable(tableName: string, id: number): Promise<IErrorResponse> {
+        return new Promise<IErrorResponse>(async resolve => {
+            const sql: string = `
+                UPDATE
+                    ${tableName}
+                SET
+                    is_active = 0
+                WHERE
+                    ${tableName}_id = ?;
+            `
+            
+            this.db.execute(sql, [id])
+                .then(result => {
+                    const deactivationInfo: any =  result[0];
+                    const deactivatedRowCount: number = +(deactivationInfo?.affectedRows);
+
+                    if (deactivatedRowCount === 1) {
+                        resolve({
+                            errorCode: 0,
+                            errorMessage: "Uspešno obrisan zapis iz baze podataka!"
+                        });
+                    } else {
+                        resolve({
+                            errorCode: -1,
+                            errorMessage: "Ovaj zapis ne postoji u bazi podataka!"
+                        }); 
+                    }
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
+        });
+    }
+
     protected async getAllByFieldNameFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, fieldName: string, fieldValue: any, options: Partial<AdapterOptions> = {}): Promise<ReturnModel[] | IErrorResponse> {
         return new Promise<ReturnModel[] | IErrorResponse>(async resolve => {
             let sql: string = `SELECT * FROM ${tableName} WHERE ${fieldName} = ?;`;
