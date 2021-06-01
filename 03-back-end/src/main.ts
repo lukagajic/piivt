@@ -17,6 +17,7 @@ import AdministratorRouter from './components/administrator/router';
 import VisitService from './components/visit/service';
 import VisitRouter from './components/visit/router';
 import AuthRouter from './components/auth/router';
+import AuthService from "./components/auth/service";
 
 async function main() {
     const application: express.Application = express();
@@ -45,7 +46,8 @@ async function main() {
         doctorService: new DoctorService(resources),
         patientService: new PatientService(resources),
         administratorService: new AdministratorService(resources),
-        visitService: new VisitService(resources)
+        visitService: new VisitService(resources),
+        authService: new AuthService(resources)
     };
 
     application.use(Config.server.static.route, express.static(Config.server.static.path, {

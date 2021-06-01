@@ -20,14 +20,40 @@ export default class AuthController extends BaseController {
             showPassword: true
         });
 
+        const ipAdress = req.ip;
+        const userAgent = req.headers["user-agent"];
+
         if (doctor === null) {
+            const isLoginAttemptInserted: boolean = await this.services.authService.insertLoginRecordAttempt(
+                data.email,
+                ipAdress,
+                userAgent,
+                true,
+                "Loše uneto korisničko ime"
+            );
+            
+            if (isLoginAttemptInserted === false) {
+                return res.status(500).send("Greška pri logovanju na sistem!");
+            }
             return res.sendStatus(404);
         }
 
         if (!bcrypt.compareSync(data.password, doctor.passwordHash)) {
             // Anti-brute-force mera: sacekati 1s pre slanja odgovora da lozinka nije dobra
+            const isLoginAttemptInserted: boolean = await this.services.authService.insertLoginRecordAttempt(
+                data.email,
+                ipAdress,
+                userAgent,
+                false,
+                "Lоše uneta lozinka"
+            );
+            
+            if (isLoginAttemptInserted === false) {
+                return res.status(500).send("Greška pri procesu logovanja na sistem!");
+            }
+
             await new Promise(resolve => setTimeout(resolve, 1000));
-            return res.status(403).send("Invalid doctor password");
+            return res.status(403).send("Uneta je neispravna lozinka za doktora");
         }
 
         const authTokenData: ITokenData = {
@@ -61,6 +87,18 @@ export default class AuthController extends BaseController {
                 expiresIn: Config.auth.doctor.refresh.duration
             }
         );
+
+        const isLoginAttemptInserted: boolean = await this.services.authService.insertLoginRecordAttempt(
+            data.email,
+            ipAdress,
+            userAgent,
+            true,
+            "Uspešno logovanje na sistem"
+        );
+        
+        if (isLoginAttemptInserted === false) {
+            return res.status(500).send("Greška pri logovanju na sistem!");
+        }
 
         res.send({
             authToken: authToken,
