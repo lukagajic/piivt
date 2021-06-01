@@ -141,34 +141,7 @@ class ServiceService extends BaseService<ServiceModel> {
     }
 
     public async delete(serviceId: number): Promise<IErrorResponse> {
-        return new Promise<IErrorResponse>(async resolve => {
-            const sql: string = "DELETE FROM service WHERE service_id = ?";
-
-            this.db.execute(sql, [ serviceId ])
-                .then(async result => {
-                    const deleteInfo: any = result[0];
-                    const deletedRowCount: number = +(deleteInfo?.affectedRows);
-
-                    if (deletedRowCount === 1) {
-                        resolve({
-                            errorCode: 0,
-                            errorMessage: "One record deleted!"
-                        });
-                    } else {
-                        resolve({
-                            errorCode: -1,
-                            errorMessage: "This record could not be deleted!"
-                        }); 
-                    }
-                })
-                .catch(error => {
-                    resolve({
-                        errorCode: error?.errno,
-                        errorMessage: error?.sqlMessage
-                    });
-                })
-
-        });
+        return await this.deleteByIdFromTable("service", serviceId);
     }
 
 }
