@@ -136,6 +136,10 @@ class PatientService extends BaseService<PatientModel> {
         });
     }
 
+    public async delete(patientId: number): Promise<IErrorResponse> {
+        return await this.deleteByIdFromTable("patient", patientId);
+    }
+
 }
 
 export default PatientService;

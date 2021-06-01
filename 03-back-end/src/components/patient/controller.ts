@@ -73,6 +73,18 @@ class PatientController extends BaseController {
     
         res.send(result);
     }
+
+    async deleteById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const id: string = req.params.id;
+        const patientId: number = +id;
+
+        if (patientId <= 0) {
+            res.status(400).send("Invalid ID number");
+            return;
+        }
+
+        res.send(await this.services.patientService.delete(patientId));
+    }
 }
 
 export default PatientController;

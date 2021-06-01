@@ -7,9 +7,10 @@ export default class PatientRouter implements IRouter {
     public setupRoutes(application: express.Application, resources: IApplicationResources) {
         const patientController: PatientController = new PatientController(resources);
 
-        application.get("/patient",     patientController.getAll.bind(patientController));
-        application.get("/patient/:id", patientController.getById.bind(patientController));
-        application.post("/patient",    patientController.add.bind(patientController));
-        application.put("/patient/:id", patientController.edit.bind(patientController));
+        application.get("/patient",         patientController.getAll.bind(patientController));
+        application.get("/patient/:id",     patientController.getById.bind(patientController));
+        application.post("/patient",        patientController.add.bind(patientController));
+        application.put("/patient/:id",     patientController.edit.bind(patientController));
+        application.delete("/patient/:id",  patientController.deleteById.bind(patientController));
     }
 }
