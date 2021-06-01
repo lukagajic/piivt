@@ -20,6 +20,7 @@ class CategoryService extends BaseService<CategoryModel> {
 
         item.categoryId = +(row?.category_id);
         item.name = row?.name;
+        item.isActive = +(row?.is_active) === 1;
 
         if (options.loadServices) {
             item.services = await this.services.serviceService.getAllByCategoryId(item.categoryId) as ServiceModel[];
