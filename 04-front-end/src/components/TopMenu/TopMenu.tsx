@@ -2,53 +2,18 @@ import React, { Component } from 'react';
 
 import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import EventRegister from '../../api/EventRegister';
 
-class TopMenuState {
+class TopMenuProperties {
     currentMenuType: "doctor" | "administrator" | "visitor" = "visitor";
 }
 
-export default class TopMenu extends Component{
-    state: TopMenuState;
-
-    constructor(props: any) {
+export default class TopMenu extends Component<TopMenuProperties>{
+    constructor(props: TopMenuProperties) {
         super(props);
-
-        this.state = {
-            currentMenuType: "visitor"
-        };
-    }
-
-    componentDidMount() {
-        EventRegister.on("AUTH_EVENT", this.authEventHandler.bind(this));
-    }
-
-    componentWillUnmount() {
-        EventRegister.off("AUTH_EVENT", this.authEventHandler.bind(this));
-    }
-
-    private authEventHandler(message: string) {
-        if (message === "force_login" || message === "doctor_logout" || message === "administrator_logout") {
-            this.setState({
-                currentMenuType: "visitor"
-            });
-        }
-
-        if (message === "doctor_login") {
-            this.setState({
-                currentMenuType: "doctor"
-            });
-        }
-
-        if (message === "administrator_login") {
-            this.setState({
-                currentMenuType: "administrator"
-            });
-        }
     }
 
     render(): JSX.Element {
-        if (this.state.currentMenuType === "visitor") {
+        if (this.props.currentMenuType === "visitor") {
             return (
                 <Nav fill variant="tabs" className="justify-content-center">
                     <Nav.Item>
@@ -65,7 +30,7 @@ export default class TopMenu extends Component{
             );
         }
         
-        if (this.state.currentMenuType === "administrator") {
+        if (this.props.currentMenuType === "administrator") {
             return (
                 <Nav fill variant="tabs" className="justify-content-center">
                     <Nav.Item>

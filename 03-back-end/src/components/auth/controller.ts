@@ -203,4 +203,8 @@ export default class AuthController extends BaseController {
             }
         }
     }
+
+    async sendOk(req: express.Request, res: express.Response, next: express.NextFunction) {
+        res.send("OK");
+    }
 }

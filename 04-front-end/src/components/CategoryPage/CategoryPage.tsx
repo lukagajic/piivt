@@ -3,10 +3,13 @@ import BasePage from '../BasePage/BasePage';
 import CategoryModel from '../../../../03-back-end/src/components/category/model';
 import { Link } from "react-router-dom";
 import CategoryService from "../../services/CategoryService";
+import EventRegister from '../../api/EventRegister';
+import { Redirect } from "react-router-dom";
 
 class CategoryPageState {
     categories: CategoryModel[] = [];
     errorMessage: string = "";
+    isDoctorLoggedIn: boolean = true;
 }
 export default class CategoryPage extends BasePage<{}> {
     state: CategoryPageState;
@@ -16,12 +19,27 @@ export default class CategoryPage extends BasePage<{}> {
 
         this.state = {
             categories: [],
-            errorMessage: ""
+            errorMessage: "",
+            isDoctorLoggedIn: true
         };
     }
 
     componentDidMount() {
         this.getCategories();
+
+        EventRegister.on("AUTH_EVENT", this.authEventHandler.bind(this));
+    }
+
+    componentWillUnmount() {
+        EventRegister.off("AUTH_EVENT", this.authEventHandler.bind(this));
+    }
+
+    private authEventHandler(status: string) {
+        if (status === "force_login") {
+            this.setState({
+                isDoctorLoggedIn: false
+            });
+        }
     }
 
     private getCategories() {
@@ -44,6 +62,10 @@ export default class CategoryPage extends BasePage<{}> {
     }
 
     renderMain(): JSX.Element {
+        if (this.state.isDoctorLoggedIn === false) {
+            return <Redirect to="/doctor/login" />
+        }
+
         return (
             <>
                 { this.state.errorMessage.length > 0 && <p>{ this.state.errorMessage }</p> }
