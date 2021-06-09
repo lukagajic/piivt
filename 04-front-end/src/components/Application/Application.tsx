@@ -85,7 +85,7 @@ class Application extends Component {
           <div className="Application-body">
             <Switch>
               <Route path="/" exact component={HomePage} />
-              <Route path="/category" component={CategoryPage} />
+              <Route path="/dashboard/category" component={CategoryPage} />
               <Route path="/patient">
                 Pacijenti
               </Route>
