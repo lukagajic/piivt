@@ -10,6 +10,8 @@ import DoctorLogin from '../DoctorLogin/DoctorLogin';
 import EventRegister from '../../api/EventRegister';
 import api from '../../api/api';
 import DoctorLogout from '../DoctorLogout/DoctorLogout';
+import AdministratorLogin from '../Administrator/AdministratorLogin';
+import AdministratorLogout from '../Administrator/AdministratorLogout';
 
 class ApplicationState {
   authorizedRole: "doctor" | "administrator" | "visitor" = "visitor";
@@ -94,6 +96,9 @@ class Application extends Component {
               </Route>
               <Route path="/doctor/login" component={DoctorLogin} />
               <Route path="/doctor/logout" component={DoctorLogout} />
+
+              <Route path="/administrator/login" component={AdministratorLogin} />
+              <Route path="/administrator/logout" component={AdministratorLogout} />
             </Switch>
           </div>
   

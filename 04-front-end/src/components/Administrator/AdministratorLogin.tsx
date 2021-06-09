@@ -6,21 +6,21 @@ import EventRegister from '../../api/EventRegister';
 import AuthService from '../../services/AuthService';
 import { Redirect } from 'react-router-dom';
 
-class DoctorLoginState {
-    email: string = "";
+class AdministratorLoginState {
+    username: string = "";
     password: string = "";
     message: string = "";
     isLoggedIn: boolean = false;
 }
 
-export default class DoctorLogin extends BasePage<{}> {
-    state: DoctorLoginState;
+export default class AdministratorLogin extends BasePage<{}> {
+    state: AdministratorLoginState;
 
     constructor(props: any) {
         super(props);
 
         this.state = {
-            email: "",
+            username: "",
             password: "",
             message: "",
             isLoggedIn: false
@@ -37,10 +37,10 @@ export default class DoctorLogin extends BasePage<{}> {
 
     private handleAuthEvent(status: string, data: any) {
 
-        if (status === "doctor_login_failed") {
-            if (Array.isArray(data?.data) && data?.data[0]?.instancePath === "/email") {
+        if (status === "administrator_login_failed") {
+            if (Array.isArray(data?.data) && data?.data[0]?.instancePath === "/username") {
                 return this.setState({
-                    message: "E-adresa nije ispravna ili ne ispunjava ograničenja"
+                    message: "Korisničko ime nije ispravno ili ne ispunjava ograničenja"
                 });
             }
 
@@ -52,7 +52,7 @@ export default class DoctorLogin extends BasePage<{}> {
 
             if (data?.status === 404) {
                 return this.setState({
-                    message: "Korisnik nije pronađen, pokušajte ponovo"
+                    message: "Administrator nije pronađen, pokušajte ponovo"
                 });
             }
 
@@ -62,9 +62,9 @@ export default class DoctorLogin extends BasePage<{}> {
                 });
             }
         }
-        if (status === "doctor_login") {
+        if (status === "administrator_login") {
             return this.setState({
-                email: "",
+                username: "",
                 password: "",
                 message: "",
                 isLoggedIn: true
@@ -75,7 +75,7 @@ export default class DoctorLogin extends BasePage<{}> {
     renderMain(): JSX.Element {
         if (this.state.isLoggedIn) {
             return (
-                <Redirect to="/dashboard/category" />
+                <Redirect to="/administrator/dashboard" />
             );
         }
 
@@ -85,17 +85,17 @@ export default class DoctorLogin extends BasePage<{}> {
                     <Card>
                         <Card.Body>
                             <Card.Title>
-                                <b>Prijavite se kao doktor</b>
+                                <b>Prijavite se kao administrator</b>
                             </Card.Title>
                             <Card.Text as="div">
                                 <Form>
                                     <Form.Group>
-                                        <Form.Label>E-mail</Form.Label>
+                                        <Form.Label>Korisničko ime</Form.Label>
                                         <Form.Control 
-                                            type="email"
-                                            placeholder="Unesite Vašu adresu e-pošte"
-                                            value={this.state.email}
-                                            onChange={ this.onChangeInput("email") } />
+                                            type="text"
+                                            placeholder="Unesite Vaše korisničko ime"
+                                            value={this.state.username}
+                                            onChange={ this.onChangeInput("username") } />
                                     </Form.Group>
                                         <Form.Label>Lozinka</Form.Label>
                                         <Form.Control 
@@ -120,7 +120,7 @@ export default class DoctorLogin extends BasePage<{}> {
     }
 
 
-    private onChangeInput(field: "email" | "password"): 
+    private onChangeInput(field: "username" | "password"): 
         (event: React.ChangeEvent<HTMLInputElement>) => void {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
             this.setState({
@@ -130,7 +130,7 @@ export default class DoctorLogin extends BasePage<{}> {
     }
 
     private handleLoginButtonClick() {
-        AuthService.attemptDoctorLogin(this.state.email, this.state.password);
+       AuthService.attemptAdministratorLogin(this.state.username, this.state.password);
     }
 
 }
