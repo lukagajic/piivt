@@ -69,7 +69,18 @@ export default class ServiceService {
         });
     }
 
-    public static editService(serviceId: number, data: IEditService) {
+    public static deleteService(serviceId: number): Promise<boolean> {
+        return new Promise<boolean>(resolve => {
+            api("delete", "/service/" + serviceId, "doctor")
+            .then(res => {
+                if (res.status !== "ok") return resolve(false);
+                if (res.data?.errorCode !== 0) return resolve(false);
+                resolve(true);
+            });
+        });
+    }
+
+    public static editService(serviceId: number, data: IEditService): Promise<IResult> {
         return new Promise<IResult>(resolve => {
             api("put", "/service/" + serviceId, "doctor", data)
             .then(res => {

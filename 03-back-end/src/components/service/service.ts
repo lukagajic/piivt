@@ -53,7 +53,9 @@ class ServiceService extends BaseService<ServiceModel> {
                 ON
                     service.category_id = category.category_id
                 WHERE
-                    category.is_active = 1;
+                    category.is_active = 1
+                AND
+                    service.is_active = 1;
             `;
 
             this.db.execute(sql)

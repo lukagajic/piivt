@@ -4,11 +4,16 @@ import ServiceService from '../../../../services/ServiceService';
 import BasePage from '../../../BasePage/BasePage';
 import { Link, Redirect } from "react-router-dom";
 import EventRegister from '../../../../api/EventRegister';
+import ConfirmAction from '../../../Misc/ConfirmAction';
 
 class ServiceDashboardListState {
     services: ServiceModel[] = [];
     errorMessage: string = "";
     isDoctorLoggedIn: boolean = true;
+    showDeleteDialog: boolean;
+    deleteDialogYesHandler: () => void;
+    deleteDialogNoHandler: () => void;
+    serviceDeleteMessage: string;
 }
 
 export default class ServiceDashboardList extends BasePage<{}> {
@@ -20,7 +25,15 @@ export default class ServiceDashboardList extends BasePage<{}> {
         this.state = {
             services: [],
             errorMessage: "",
-            isDoctorLoggedIn: true
+            isDoctorLoggedIn: true,
+            showDeleteDialog: false,
+            deleteDialogYesHandler: () => {},
+            deleteDialogNoHandler: () => {
+                this.setState({
+                    showDeleteDialog: false,
+                })
+            },
+            serviceDeleteMessage: ""
         };
     }
 
@@ -32,6 +45,38 @@ export default class ServiceDashboardList extends BasePage<{}> {
 
     componentWillUnmount() {
         EventRegister.off("AUTH_EVENT", this.authEventHandler.bind(this));
+    }
+
+    private getDeleteHandler(serviceId: number) {
+        return () => {
+            this.setState({
+                showDeleteDialog: true,
+                deleteDialogYesHandler: () => {
+                   ServiceService.deleteService(serviceId)
+                   .then(res => {
+                        let messageToShow = res ? "Usluga obrisana!" : "Došlo je do greške prilikom brisanja usluge"
+                        
+                        this.setState({
+                            serviceDeleteMessage: messageToShow
+                        });
+                        
+                        if (res) {
+                            this.getServices();
+                        }
+
+                        this.setState({
+                            showDeleteDialog: false
+                        });
+
+                        setTimeout(() => {
+                            this.setState({
+                                serviceDeleteMessage: ""
+                            });
+                        }, 2000);
+                   })
+                }
+            });
+        };
     }
 
     private authEventHandler(status: string) {
@@ -66,9 +111,23 @@ export default class ServiceDashboardList extends BasePage<{}> {
 
         return(
             <>
+                {
+                    this.state.showDeleteDialog ? (
+                        <ConfirmAction
+                            title="Brisanje usluge iz liste?"
+                            message="Da li ste sigurni da želite da uklonite uslugu iz liste?"
+                            yesHandler={ this.state.deleteDialogYesHandler }
+                            noHandler={ this.state.deleteDialogNoHandler } />
+                    ): ""
+                }
+
                 { this.state.errorMessage.length > 0 && <p>{ this.state.errorMessage }</p> }
+
                 <h2>Usluge klinike</h2>
                 <Link className="btn btn-success" to="/dashboard/service/add">&#43; Nova usluga</Link>
+                
+                <p>{ this.state.serviceDeleteMessage }</p>
+                
                 <table className="table table-sm">
                     <thead>
                         <tr>
@@ -105,7 +164,7 @@ export default class ServiceDashboardList extends BasePage<{}> {
                                     </td>
                                     <td>
                                         <Link className="btn btn-secondary btn-sm" to= { "/dashboard/service/edit/" + service.serviceId }>Izmeni</Link>
-                                        <Button size="sm" className="mx-1" variant="danger">
+                                        <Button onClick={ this.getDeleteHandler(service.serviceId) } size="sm" className="mx-1" variant="danger">
                                             Obriši / Sakrij
                                         </Button>
                                     </td>
