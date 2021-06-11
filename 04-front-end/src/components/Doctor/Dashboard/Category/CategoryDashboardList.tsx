@@ -65,8 +65,6 @@ export default class CategoryDashboardList extends BasePage<{}> {
                     categories: categories
                 });
             });
-
-        
     }
 
     renderMain(): JSX.Element {
