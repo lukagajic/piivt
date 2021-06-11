@@ -16,6 +16,7 @@ class CategoryDashboardListState {
     newCategoryName: string = "";
     addCategoryMessage: string = "";
     editCategoryMessage: string = "";
+    categoryDeleteMessage: string = ""
 }
 export default class CategoryDashboardList extends BasePage<{}> {
     state: CategoryDashboardListState;
@@ -30,7 +31,8 @@ export default class CategoryDashboardList extends BasePage<{}> {
             isAddCategoryOptionShown: true,
             newCategoryName: "",
             addCategoryMessage: "",
-            editCategoryMessage: ""
+            editCategoryMessage: "",
+            categoryDeleteMessage: ""
         };
     }
 
@@ -46,8 +48,29 @@ export default class CategoryDashboardList extends BasePage<{}> {
         EventRegister.off("CATEGORY_EVENT", this.categoryEventHandler.bind(this));
     }
 
-    private categoryEventHandler() {
-        this.getCategories();
+    private categoryEventHandler(status: string) {
+        if (status === "category.update") {
+            this.getCategories();
+        }
+
+        if (status === "category-delete-success") {
+            this.getCategories();
+            this.setState({
+                categoryDeleteMessage: "Kategorija uspešno obrisana"
+            });
+
+           setTimeout(() => {
+                this.setState({
+                    categoryDeleteMessage: ""
+                });
+            }, 2000);
+        }
+
+        if (status === "category-delete-fail") {
+            this.setState({
+                categoryDeleteMessage: "Došlo je do greške prilikom brisanja kategorije"
+            });
+        }
     }
 
     private authEventHandler(status: string) {
@@ -162,6 +185,7 @@ export default class CategoryDashboardList extends BasePage<{}> {
                         </Card.Body>
                     </Card>
                 }
+                <p className="h5">{this.state.categoryDeleteMessage}</p>
                 <CardDeck className="row">
                     {
                         this.state.categories.map(category => (

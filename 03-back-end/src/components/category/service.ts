@@ -35,6 +35,12 @@ class CategoryService extends BaseService<CategoryModel> {
         return await this.getAllFromTable<CategoryModelAdapterOptions>("category", options);
     }
 
+    public async getAllActive(
+        options: Partial<CategoryModelAdapterOptions> = { }
+    ): Promise<CategoryModel[] | IErrorResponse> {
+        return await this.getAllActiveFromTable<CategoryModelAdapterOptions>("category", options);
+    }
+
     public async getById(categoryId: number, options: Partial<CategoryModelAdapterOptions> = { }): Promise<CategoryModel | null | IErrorResponse> {
         return await this.getByIdFromTable<CategoryModelAdapterOptions>("category", categoryId, options);
     }

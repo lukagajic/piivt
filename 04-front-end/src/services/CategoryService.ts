@@ -29,9 +29,6 @@ export default class CategoryService {
         return new Promise<IResult>(resolve => {
             api("put", "/category/" + categoryId, "doctor", { name: newName })
             .then(res => {
-                //if (res.status !== "ok") return resolve(false);
-                //if (res.data?.errorCode !== undefined) return resolve(false);
-                //resolve(true);
                 if (res?.status === "error") {
                     if (Array.isArray(res?.data?.data)) {
                         const field = res?.data?.data[0]?.instancePath.replace('/', '');
@@ -83,6 +80,17 @@ export default class CategoryService {
                     success: true,
                 });
             })
+        });
+    }
+
+    public static deleteCategory(categoryId: number) {
+        return new Promise<boolean>(resolve => {
+            api("delete", "/category/" + categoryId, "doctor")
+            .then(res => {
+                if (res.status !== "ok") return resolve(false);
+                if (res.data?.errorCode !== 0) return resolve(false);
+                resolve(true);
+            });
         });
     }
 }
