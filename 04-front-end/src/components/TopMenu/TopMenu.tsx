@@ -34,11 +34,6 @@ export default class TopMenu extends Component<TopMenuProperties>{
             return (
                 <Nav fill variant="tabs" className="justify-content-center">
                     <Nav.Item>
-                        <Link className="nav-link" to="/">
-                            Početna strana
-                        </Link>
-                    </Nav.Item>
-                    <Nav.Item>
                         <Link className="nav-link" to="/dashbord/visits">
                             Evidencija svih poseta
                         </Link>
@@ -54,11 +49,6 @@ export default class TopMenu extends Component<TopMenuProperties>{
 
         return (
             <Nav fill variant="tabs" className="justify-content-center">
-                <Nav.Item>
-                    <Link className="nav-link" to="/">
-                        Početna strana
-                    </Link>
-                </Nav.Item>
                 <Nav.Item>
                     <Link className="nav-link" to="/dashboard/category">
                         Kategorije usluga klinike

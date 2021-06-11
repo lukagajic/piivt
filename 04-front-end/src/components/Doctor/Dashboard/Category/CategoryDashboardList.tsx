@@ -1,18 +1,18 @@
 import React from "react";
-import BasePage from '../BasePage/BasePage';
-import CategoryModel from '../../../../03-back-end/src/components/category/model';
+import BasePage from '../../../BasePage/BasePage';
+import CategoryModel from '../../../../../../03-back-end/src/components/category/model';
 import { Link } from "react-router-dom";
-import CategoryService from "../../services/CategoryService";
-import EventRegister from '../../api/EventRegister';
+import CategoryService from "../../../../services/CategoryService";
+import EventRegister from '../../../../api/EventRegister';
 import { Redirect } from "react-router-dom";
 
-class CategoryPageState {
+class CategoryDashboardListState {
     categories: CategoryModel[] = [];
     errorMessage: string = "";
     isDoctorLoggedIn: boolean = true;
 }
-export default class CategoryPage extends BasePage<{}> {
-    state: CategoryPageState;
+export default class CategoryDashboardList extends BasePage<{}> {
+    state: CategoryDashboardListState;
 
     constructor(props: Readonly<{}>) {
         super(props);

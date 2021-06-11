@@ -4,12 +4,11 @@ import './Application.sass';
 import { Container } from "react-bootstrap";
 import TopMenu from '../TopMenu/TopMenu';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import HomePage from '../HomePage/HomePage';
-import CategoryPage from '../CategoryPage/CategoryPage';
-import DoctorLogin from '../DoctorLogin/DoctorLogin';
+import CategoryDashboardList from '../Doctor/Dashboard/Category/CategoryDashboardList';
+import DoctorLogin from '../Doctor/DoctorLogin';
 import EventRegister from '../../api/EventRegister';
 import api from '../../api/api';
-import DoctorLogout from '../DoctorLogout/DoctorLogout';
+import DoctorLogout from '../Doctor/DoctorLogout';
 import AdministratorLogin from '../Administrator/AdministratorLogin';
 import AdministratorLogout from '../Administrator/AdministratorLogout';
 
@@ -86,8 +85,7 @@ class Application extends Component {
   
           <div className="Application-body">
             <Switch>
-              <Route path="/" exact component={HomePage} />
-              <Route path="/dashboard/category" component={CategoryPage} />
+              <Route path="/dashboard/category" component={CategoryDashboardList} />
               <Route path="/patient">
                 Pacijenti
               </Route>
