@@ -35,28 +35,25 @@ export default class CategoryDashboardListItem extends Component<CategoryDashboa
 
         CategoryService.editCategory(this.props.category.categoryId, this.state.categoryName)
             .then(res => {
-                const message: string = res ? "Kategorija uspešno izmenjena" : "Došlo je do greške prilikom izmene kategorije";
-                
-                this.setState({
-                    message: message
-                });
-
-                setTimeout(() => {
+                if (res.success === false) {
                     this.setState({
-                        message: ""
+                        message: res.message
                     });
-                }, 2000);
-
-                if (res === false) {
-                    this.exitEditMode();
                 } else {
                     this.setState({
-                        isFieldEditable: false
+                        message: "Kategorija uspešno izmenjena"
                     });
 
                     EventRegister.emit("CATEGORY_EVENT", "category.update");
+
+                    setTimeout(() => {
+                        this.setState({
+                            message: "",
+                            isFieldEditable: ""
+                        });
+                    }, 2000);
                 }
-            })
+            });
     }
 
     private switchToEditMode() {

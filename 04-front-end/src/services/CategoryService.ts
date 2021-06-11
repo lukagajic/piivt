@@ -25,13 +25,34 @@ export default class CategoryService {
         });
     }
 
-    public static editCategory(categoryId: number, newName: string): Promise<boolean> {
-        return new Promise<boolean>(resolve => {
+    public static editCategory(categoryId: number, newName: string): Promise<IResult> {
+        return new Promise<IResult>(resolve => {
             api("put", "/category/" + categoryId, "doctor", { name: newName })
             .then(res => {
-                if (res.status !== "ok") return resolve(false);
-                if (res.data?.errorCode !== undefined) return resolve(false);
-                resolve(true);
+                //if (res.status !== "ok") return resolve(false);
+                //if (res.data?.errorCode !== undefined) return resolve(false);
+                //resolve(true);
+                if (res?.status === "error") {
+                    if (Array.isArray(res?.data?.data)) {
+                        const field = res?.data?.data[0]?.instancePath.replace('/', '');
+                        const msg   = res?.data?.data[0]?.message;
+                        const error = field + " " + msg;
+                        return resolve({
+                            success: false,
+                            message: error,
+                        });
+                    }
+                }
+
+                if (res?.data?.errorCode === 1062) {
+                    return resolve({
+                        success: false,
+                        message: "Kategorija sa tim imenom već postoji.",
+                    });
+                }
+                return resolve({
+                    success: true,
+                });
             })
         });
     }
