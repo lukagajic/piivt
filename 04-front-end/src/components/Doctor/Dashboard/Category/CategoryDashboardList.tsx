@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import CategoryService from "../../../../services/CategoryService";
 import EventRegister from '../../../../api/EventRegister';
 import { Redirect } from "react-router-dom";
+import { CardDeck } from "react-bootstrap";
+import CategoryDashboardListItem from './CategoryDashboardListItem';
 
 class CategoryDashboardListState {
     categories: CategoryModel[] = [];
@@ -28,10 +30,16 @@ export default class CategoryDashboardList extends BasePage<{}> {
         this.getCategories();
 
         EventRegister.on("AUTH_EVENT", this.authEventHandler.bind(this));
+        EventRegister.on("CATEGORY_EVENT", this.categoryEventHandler.bind(this));
     }
 
     componentWillUnmount() {
         EventRegister.off("AUTH_EVENT", this.authEventHandler.bind(this));
+        EventRegister.off("CATEGORY_EVENT", this.categoryEventHandler.bind(this));
+    }
+
+    private categoryEventHandler() {
+        this.getCategories();
     }
 
     private authEventHandler(status: string) {
@@ -70,24 +78,13 @@ export default class CategoryDashboardList extends BasePage<{}> {
             <>
                 { this.state.errorMessage.length > 0 && <p>{ this.state.errorMessage }</p> }
                 <h2>Kategorije usluga klinike</h2>
-                <ul>
+                <CardDeck className="row">
                     {
                         this.state.categories.map(category => (
-                            <div key={category.categoryId} style={{ border: "1px solid blue", borderRadius: "5px", padding: "5px", margin: "5px 0px 5px 0px" }}>
-                                <h3>{category.name}</h3>
-                                <ul>
-                                    {
-                                        category.services.map(service => (
-                                            <Link to={`/service/${service.serviceId}`} key={service.serviceId}>
-                                                { service.name }
-                                            </Link>
-                                        ))
-                                    }
-                                </ul>
-                            </div>
+                            <CategoryDashboardListItem key={ "category-list-item-" + category.categoryId } category={ category } />
                         ))
                     }
-                </ul>
+                </CardDeck>
             </>
         );
     }

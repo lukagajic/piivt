@@ -19,4 +19,15 @@ export default class CategoryService {
             });
         });
     }
+
+    public static editCategory(categoryId: number, newName: string): Promise<boolean> {
+        return new Promise<boolean>(resolve => {
+            api("put", "/category/" + categoryId, "doctor", { name: newName })
+            .then(res => {
+                if (res.status !== "ok") return resolve(false);
+                if (res.data?.errorCode !== undefined) return resolve(false);
+                resolve(true);
+            })
+        });
+    }
 }
