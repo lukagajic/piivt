@@ -70,6 +70,8 @@ export default class CategoryService {
                     }
                 }
 
+
+                // Ovaj slucaj sada ne bi trebalo da se desi
                 if (res?.data?.errorCode === 1062) {
                     return resolve({
                         success: false,

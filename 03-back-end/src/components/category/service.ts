@@ -47,7 +47,15 @@ class CategoryService extends BaseService<CategoryModel> {
 
     public async add(data: IAddCategory): Promise<CategoryModel | IErrorResponse > {
         return new Promise<CategoryModel | IErrorResponse>(async resolve => {
-            const sql: string = "INSERT category SET name = ?;";
+            const sql: string = 
+            `
+                INSERT category 
+                SET
+                    name = ?
+                ON DUPLICATE KEY
+                UPDATE
+                    is_active = 1
+            ;`;
 
             this.db.execute(sql, [ data.name ])
                 .then(async result => {
