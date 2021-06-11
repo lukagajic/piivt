@@ -40,6 +40,46 @@ class ServiceService extends BaseService<ServiceModel> {
         return item;
     }
 
+    public async getAllActive(options: Partial<ServiceModelAdapterOptions> = {}): Promise<ServiceModel[] | IErrorResponse> {
+        return new Promise<ServiceModel[] | IErrorResponse>(async resolve => {
+            const sql: string = 
+            `
+                SELECT
+                    service.*
+                FROM
+                    service
+                INNER JOIN
+                    category 
+                ON
+                    service.category_id = category.category_id
+                WHERE
+                    category.is_active = 1;
+            `;
+
+            this.db.execute(sql)
+                .then(async result => {
+                    const rows = result[0];
+
+                    const lista: ServiceModel[] = [];
+
+                    if (Array.isArray(rows)) {
+                        for (const row of rows) {
+                            lista.push(
+                                await this.adaptModel(row, options)
+                            );
+                        }
+                    }        
+                    resolve(lista);
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
+        });
+    }
+
     public async getAll(
         options: Partial<ServiceModelAdapterOptions> = { }
     ): Promise<ServiceModel[] | IErrorResponse> {

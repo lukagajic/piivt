@@ -8,7 +8,7 @@ import BaseController from '../../common/BaseController';
 export default class ServiceController extends BaseController {
     
     async getAll(req: express.Request, res: express.Response, next: express.NextFunction) {
-        res.send(await this.services.serviceService.getAll({
+        res.send(await this.services.serviceService.getAllActive({
             loadCategory: true
         }));
     }
