@@ -28,7 +28,7 @@ export default class CategoryDashboardList extends BasePage<{}> {
             categories: [],
             errorMessage: "",
             isDoctorLoggedIn: true,
-            isAddCategoryOptionShown: true,
+            isAddCategoryOptionShown: false,
             newCategoryName: "",
             addCategoryMessage: "",
             editCategoryMessage: "",
