@@ -13,6 +13,7 @@ import AdministratorLogin from '../Administrator/AdministratorLogin';
 import AdministratorLogout from '../Administrator/AdministratorLogout';
 import ServiceDashboardList from '../Doctor/Dashboard/Service/ServiceDashboardList';
 import ServiceDashboardAdd from '../Doctor/Dashboard/Service/ServiceDashboardAdd';
+import ServiceDashboardEdit from '../Doctor/Dashboard/Service/ServiceDashboardEdit';
 
 class ApplicationState {
   authorizedRole: "doctor" | "administrator" | "visitor" = "visitor";
@@ -90,6 +91,7 @@ class Application extends Component {
               <Route path="/dashboard/category" component={CategoryDashboardList} />
               <Route exact path="/dashboard/service" component={ServiceDashboardList} />
               <Route path="/dashboard/service/add" component={ServiceDashboardAdd} />
+              <Route path="/dashboard/service/edit/:sId" component={ServiceDashboardEdit} />
               <Route path="/patient">
                 Pacijenti
               </Route>

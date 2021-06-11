@@ -11,6 +11,20 @@ export interface IAddService {
     categoryId: number;
 }
 
+interface IResult {
+    success: boolean;
+    message?: string;
+}
+
+export interface IEditService {
+    name: string;
+    description: string;
+    price: number;
+    priceForChildren: number;
+    priceForSeniors: number;
+    categoryId: number;
+}
+
 export default class ServiceService {
     public static getAll(): Promise<ServiceModel[]> {
         return new Promise<ServiceModel[]>(resolve => {
@@ -36,6 +50,51 @@ export default class ServiceService {
                 if (res.status !== "ok") return resolve(false);
                 if (res.data?.errorCode !== undefined) return resolve(false);
                 resolve(true);
+            })
+        });
+    }
+
+    public static getServiceById(serviceId: number): Promise<ServiceModel | null> {
+        return new Promise<ServiceModel|null>(resolve => {
+            api("get", "/service/" + serviceId, "doctor")
+            .then(res => {
+                if (res?.status !== "ok") {
+                    if (res.status === "login") {
+                        EventRegister.emit("AUTH_EVENT", "force_login");
+                    }
+                    return resolve(null);
+                }
+                resolve(res.data as ServiceModel);
+            });
+        });
+    }
+
+    public static editService(serviceId: number, data: IEditService) {
+        return new Promise<IResult>(resolve => {
+            api("put", "/service/" + serviceId, "doctor", data)
+            .then(res => {
+                if (res?.status === "error") {
+                    if (Array.isArray(res?.data?.data)) {
+                        const field = res?.data?.data[0]?.instancePath.replace('/', '');
+                        const msg   = res?.data?.data[0]?.message;
+                        const error = field + " " + msg;
+                        return resolve({
+                            success: false,
+                            message: error,
+                        });
+                    }
+                }
+
+                if (res?.data?.errorCode === 1062) {
+                    return resolve({
+                        success: false,
+                        message: "Servis sa unetim imenom već postoji!",
+                    });
+                }
+
+                return resolve({
+                    success: true,
+                });
             })
         });
     }
