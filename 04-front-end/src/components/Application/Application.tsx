@@ -11,6 +11,7 @@ import api from '../../api/api';
 import DoctorLogout from '../Doctor/DoctorLogout';
 import AdministratorLogin from '../Administrator/AdministratorLogin';
 import AdministratorLogout from '../Administrator/AdministratorLogout';
+import ServiceDashboardList from '../Doctor/Dashboard/Service/ServiceDashboardList';
 
 class ApplicationState {
   authorizedRole: "doctor" | "administrator" | "visitor" = "visitor";
@@ -86,6 +87,7 @@ class Application extends Component {
           <div className="Application-body">
             <Switch>
               <Route path="/dashboard/category" component={CategoryDashboardList} />
+              <Route exact path="/dashboard/service" component={ServiceDashboardList} />
               <Route path="/patient">
                 Pacijenti
               </Route>

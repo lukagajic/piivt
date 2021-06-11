@@ -55,6 +55,11 @@ export default class TopMenu extends Component<TopMenuProperties>{
                     </Link>
                 </Nav.Item>
                 <Nav.Item>
+                    <Link className="nav-link" to="/dashboard/service">
+                        Usluge klinike
+                    </Link>
+                </Nav.Item>
+                <Nav.Item>
                     <Link className="nav-link" to="/dashboard/patient">
                         Moji pacijenti
                     </Link>
