@@ -1,4 +1,5 @@
 import IModel from '../../common/IModel.interface';
+import PatientModel from '../patient/model';
 
 class DoctorModel implements IModel {
     doctorId: number;
@@ -19,6 +20,7 @@ class DoctorModel implements IModel {
     title: "magistar" | "specijalizant" | "doktor" | "docent" | "primarijus";
     phoneNumber: string;
     isActive: boolean;
+    patients: PatientModel[] = [];
 }
 
 export default DoctorModel;

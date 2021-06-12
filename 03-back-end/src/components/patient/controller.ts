@@ -10,6 +10,16 @@ class PatientController extends BaseController {
         res.send(await this.services.patientService.getAll());
     }
 
+    async getAllByDoctor(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const doctorId = +(req.authorized?.id);
+
+        res.send(await this.services.patientService.getAllActiveByDoctorId(doctorId));
+    }
+
+    async getAllGenderValues(req: express.Request, res: express.Response, next: express.NextFunction) {
+        res.send(await this.services.patientService.getAllGenderValues());
+    }
+
     async getById(req: express.Request, res: express.Response, next: express.NextFunction) {
         const id: string = req.params.id;
 
@@ -36,6 +46,8 @@ class PatientController extends BaseController {
     }
 
     async add(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const doctorId = +(req.authorized?.id);
+        
         const data = req.body;
 
         if (!IAddPatientValidator(data)) {
@@ -43,7 +55,7 @@ class PatientController extends BaseController {
             return;
         }
 
-        const result: PatientModel | IErrorResponse =  await this.services.patientService.add(data as IAddPatient);
+        const result: PatientModel | IErrorResponse =  await this.services.patientService.add(data as IAddPatient, doctorId);
         
         res.send(result);
     }

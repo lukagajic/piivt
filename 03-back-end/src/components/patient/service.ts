@@ -6,9 +6,10 @@ import IErrorResponse from '../../common/IErrorResponse.inteface';
 import { IAddPatient } from './dto/AddPatient';
 import { IEditPatient } from './dto/EditPatient';
 import * as bcrypt from 'bcrypt';
+import DoctorModel from '../doctor/model';
 
 class PatientModelAdapterOptions implements IModelAdapterOptions {
-    
+    loadDoctor: boolean = false;
 }
 
 class PatientService extends BaseService<PatientModel> {
@@ -26,6 +27,11 @@ class PatientService extends BaseService<PatientModel> {
         item.address = data?.address;
         item.isActive = +(data?.is_active) === 1;
         item.createdAt = new Date(data?.created_at);
+        item.doctorId = +(data?.doctor_id);
+
+        if (options.loadDoctor === true) {
+            item.doctor = await this.services.doctorService.getById(item.doctorId) as DoctorModel;
+        }
 
         return item;
     }
@@ -36,11 +42,88 @@ class PatientService extends BaseService<PatientModel> {
         return await this.getAllFromTable<PatientModelAdapterOptions>("patient", options) as PatientModel[];
     }
 
+    public async getAllGenderValues(): Promise<string[] | IErrorResponse> {
+        return new Promise<string[] | IErrorResponse>(async resolve => {
+            const sql: string = 
+            `
+                SELECT SUBSTRING(COLUMN_TYPE,5) as genderValues
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA='aplikacija'     
+                    AND TABLE_NAME='patient'
+                    AND COLUMN_NAME='gender';
+            `;
+
+            this.db.execute(sql)
+                .then(async result => {
+                    const rows = result[0];
+
+                    let genderValues: string = rows[0]?.genderValues;
+                    genderValues = genderValues.replace(/'/g,'').replace("(", "").replace(")", "");
+                    const genderValuesArray: string[] = genderValues.split(",");
+
+                    return resolve(genderValuesArray);
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
+        });
+    }
+
+    public async getAllByDoctorId(doctorId: number, options: Partial<PatientModelAdapterOptions> = { }): Promise<PatientModel[] | IErrorResponse> {
+        return await this.getAllByFieldNameFromTable("patient", "doctor_id", doctorId, options);
+    }
+
+    public async getAllActiveByDoctorId(doctorId: number, options: Partial<PatientModelAdapterOptions> = {}): Promise<PatientModel[] | IErrorResponse> {
+        return new Promise<PatientModel[] | IErrorResponse>(async resolve => {
+            const sql: string = 
+            `
+                SELECT
+                    patient.*
+                FROM
+                    patient
+                INNER JOIN
+                    doctor 
+                ON
+                    patient.doctor_id = doctor.doctor_id
+                WHERE
+                    patient.is_active = 1
+                AND
+                    doctor.doctor_id = ?    
+                ;
+            `;
+
+            this.db.execute(sql, [doctorId])
+                .then(async result => {
+                    const rows = result[0];
+
+                    const lista: PatientModel[] = [];
+
+                    if (Array.isArray(rows)) {
+                        for (const row of rows) {
+                            lista.push(
+                                await this.adaptModel(row, options)
+                            );
+                        }
+                    }        
+                    resolve(lista);
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
+        });
+    }
+
     public async getById(patientId: number, options: Partial<PatientModelAdapterOptions> = { }): Promise<PatientModel | null | IErrorResponse> {
         return await this.getByIdFromTable<PatientModelAdapterOptions>("patient", patientId, options);
     }
 
-    public async add(data: IAddPatient): Promise<PatientModel | IErrorResponse > {
+    public async add(data: IAddPatient, doctorId: number): Promise<PatientModel | IErrorResponse > {
         return new Promise<PatientModel | IErrorResponse>(async resolve => {
             const sql: string = `
                 INSERT
@@ -53,7 +136,8 @@ class PatientService extends BaseService<PatientModel> {
                     email = ?,
                     personal_identity_number = ?,
                     phone_number = ?,
-                    address = ?;
+                    address = ?,
+                    doctor_id = ?;
             `;
 
             this.db.execute(sql, [
@@ -64,7 +148,8 @@ class PatientService extends BaseService<PatientModel> {
                 data.email,
                 data.personalIdentityNumber,
                 data.phoneNumber,
-                data.address
+                data.address,
+                doctorId
              ])
                 .then(async result => {
                     const insertInfo: any = result[0];

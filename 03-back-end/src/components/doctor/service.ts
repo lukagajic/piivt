@@ -6,10 +6,12 @@ import { IAddDoctor } from './dto/AddDoctor';
 
 import * as bcrypt from "bcrypt"; 
 import { IEditDoctor } from './dto/EditDoctor';
+import PatientModel from '../patient/model';
 
 
 class DoctorModelAdapterOptions implements IModelAdapterOptions {
     showPassword: boolean = false;
+    loadPatients: boolean = false;
 }
 
 class DoctorService extends BaseService<DoctorModel> {
@@ -34,10 +36,13 @@ class DoctorService extends BaseService<DoctorModel> {
         item.phoneNumber = data?.phone_number;
         item.isActive = +(data?.is_active) === 1;
 
-        // Kasnije cemo dodati i opcije
+        if (options.loadPatients === true) {
+            item.patients = await this.services.patientService.getAllActiveByDoctorId(item.doctorId) as PatientModel[];
+        }
 
         return item;
     }
+
 
     public async getAll(
         options: Partial<DoctorModelAdapterOptions> = { }

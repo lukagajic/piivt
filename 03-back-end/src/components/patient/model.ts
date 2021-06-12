@@ -1,4 +1,5 @@
 import IModel from '../../common/IModel.interface';
+import DoctorModel from '../doctor/model';
 
 class PatientModel implements IModel {
     patientId: number;
@@ -12,6 +13,8 @@ class PatientModel implements IModel {
     address: string;
     isActive: boolean;
     createdAt: Date;
+    doctorId: number;
+    doctor: DoctorModel | null = null;
 }
 
 export default PatientModel;
