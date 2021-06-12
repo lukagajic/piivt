@@ -16,6 +16,7 @@ import ServiceDashboardAdd from '../Doctor/Dashboard/Service/ServiceDashboardAdd
 import ServiceDashboardEdit from '../Doctor/Dashboard/Service/ServiceDashboardEdit';
 import PatientDashboardList from '../Doctor/Dashboard/Patient/PatientDashboardList';
 import PatientDashboardAdd from '../Doctor/Dashboard/Patient/PatientDashboardAdd';
+import PatientDashboardEdit from '../Doctor/Dashboard/Patient/PatientDashboardEdit';
 
 class ApplicationState {
   authorizedRole: "doctor" | "administrator" | "visitor" = "visitor";
@@ -96,6 +97,7 @@ class Application extends Component {
               <Route path="/dashboard/service/edit/:sId" component={ServiceDashboardEdit} />
               <Route path="/dashboard/patient" exact component={PatientDashboardList} />
               <Route path="/dashboard/patient/add"  component={PatientDashboardAdd} />
+              <Route path="/dashboard/patient/edit/:pId" component={PatientDashboardEdit} />
               <Route path="/profile">
                 Moj nalog
               </Route>

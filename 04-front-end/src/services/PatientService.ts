@@ -8,6 +8,17 @@ interface IResult {
 }
 
 
+export interface IEditPatient {
+    forename: string;
+    surname: string;
+    bornAt: string;
+    gender: "male" | "female";
+    email: string;
+    personalIdentityNumber: string;
+    phoneNumber: string;
+    address: string;
+}
+
 export interface IAddPatient {
     forename: string;
     surname: string;
@@ -36,6 +47,22 @@ export default class PatientService {
             });
         });
     }
+
+    public static getPatientById(patientId: number): Promise<PatientModel|null> {
+        return new Promise<PatientModel|null>(resolve => {
+            api("get", "/patient/" + patientId, "doctor")
+            .then(res => {
+                if (res?.status !== "ok") {
+                    if (res.status === "login") {
+                        EventRegister.emit("AUTH_EVENT", "force_login");
+                    }
+                    return resolve(null);
+                }
+                resolve(res.data as PatientModel);
+            });
+        });
+    }
+
 
     public static addPatient(data: IAddPatient): Promise<IResult> {
         return new Promise<IResult>(resolve => {
@@ -88,6 +115,57 @@ export default class PatientService {
         });        
     }
 
+    public static editPatient(patientId: number, data: IEditPatient): Promise<IResult> {
+        return new Promise<IResult>(resolve => {
+            api("put", "/patient/" + patientId, "doctor", data)
+            .then(res => {
+                if (res?.status === "error") {
+                    if (Array.isArray(res?.data?.data)) {
+                        const field = res?.data?.data[0]?.instancePath.replace('/', '');
+                        const msg   = res?.data?.data[0]?.message;
+                        const error = field + " " + msg;
+                        return resolve({
+                            success: false,
+                            message: error,
+                        });
+                    }
+                }
+
+                if (res?.data?.errorCode === 1062) {
+                    if ((res?.data?.errorMessage as string).includes("uq_patient_email")) {
+                        return resolve({
+                            success: false,
+                            message: "Pacijent sa unetom e-mail adresom već postoji!"
+                        });
+                    }
+
+                    if ((res?.data?.errorMessage as string).includes("uq_patient_personal_identity_number")) {
+                        return resolve({
+                            success: false,
+                            message: "Pacijent sa unetim JMBG već postoji!"
+                        });
+                    }
+
+                    if ((res?.data?.errorMessage as string).includes("uq_patient_phone_number")) {
+                        return resolve({
+                            success: false,
+                            message: "Pacijent sa unetim brojem telefona već postoji!"
+                        });
+                    }
+
+                    return resolve({
+                        success: false,
+                        message: res?.data?.errorMessage,
+                    });
+                }
+
+                return resolve({
+                    success: true,
+                });
+            })
+        });
+    }
+
     public static getGenders(): Promise<string[]> {
         return new Promise<string[]>(resolve => {
             api("get", "/patient/gender", "doctor")
@@ -101,6 +179,17 @@ export default class PatientService {
                 }
 
                 resolve(res.data as string[]);
+            });
+        });
+    }
+
+    public static deletePatient(patientId: number): Promise<boolean> {
+        return new Promise<boolean>(resolve => {
+            api("delete", "/patient/" + patientId, "doctor")
+            .then(res => {
+                if (res.status !== "ok") return resolve(false);
+                if (res.data?.errorCode !== 0) return resolve(false);
+                resolve(true);
             });
         });
     }

@@ -47,21 +47,21 @@ export default class PatientDashboardList extends BasePage<{}> {
         EventRegister.off("AUTH_EVENT", this.authEventHandler.bind(this));
     }
 
-    private getDeleteHandler(serviceId: number) {
+    private getDeleteHandler(patientId: number) {
         return () => {
-            /* this.setState({
+            this.setState({
                 showDeleteDialog: true,
                 deleteDialogYesHandler: () => {
-                   ServiceService.deleteService(serviceId)
+                   PatientService.deletePatient(patientId)
                    .then(res => {
-                        let messageToShow = res ? "Usluga obrisana!" : "Došlo je do greške prilikom brisanja usluge"
+                        let messageToShow = res ? "Pacijent obrisan!" : "Došlo je do greške prilikom brisanja pacijenta"
                         
                         this.setState({
                             patientDeleteMessage: messageToShow
                         });
                         
                         if (res) {
-                            this.getServices();
+                            this.getPatients();
                         }
 
                         this.setState({
@@ -75,7 +75,7 @@ export default class PatientDashboardList extends BasePage<{}> {
                         }, 2000);
                    })
                 }
-            }); */
+            });
         };
     }
 

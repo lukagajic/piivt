@@ -26,6 +26,7 @@ export default class PatientRouter implements IRouter {
 
         application.get(
             "/patient/:id",
+            AuthMiddleware.getVerifier("doctor"),
             patientController.getById.bind(patientController)
         );
 

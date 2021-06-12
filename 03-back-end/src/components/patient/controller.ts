@@ -21,6 +21,11 @@ class PatientController extends BaseController {
     }
 
     async getById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
         const id: string = req.params.id;
 
         const patientId: number = +id;
@@ -38,6 +43,10 @@ class PatientController extends BaseController {
         }
 
         if (data instanceof PatientModel) {
+            if (data.doctorId !== req?.authorized.id) {
+                return res.status(403).send("Ovo nije vaš pacijent!");
+            }
+
             res.send(data);
             return;
         }
@@ -46,6 +55,11 @@ class PatientController extends BaseController {
     }
 
     async add(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
         const doctorId = +(req.authorized?.id);
         
         const data = req.body;
@@ -87,6 +101,11 @@ class PatientController extends BaseController {
     }
 
     async deleteById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
         const id: string = req.params.id;
         const patientId: number = +id;
 
@@ -95,7 +114,20 @@ class PatientController extends BaseController {
             return;
         }
 
-        res.send(await this.services.patientService.delete(patientId));
+        const data: PatientModel | null | IErrorResponse = await this.services.patientService.getById(patientId);
+
+        if (data === null) {
+            res.sendStatus(404);
+            return;
+        }
+
+        if (data instanceof PatientModel) {
+            if (data.doctorId !== req?.authorized.id) {
+                return res.status(403).send("Ovo nije vaš pacijent!");
+            }
+
+            res.send(await this.services.patientService.delete(patientId));
+        }
     }
 }
 
