@@ -22,7 +22,7 @@ class VisitDashboardListState {
     showDeleteDialog: boolean;
     deleteDialogYesHandler: () => void;
     deleteDialogNoHandler: () => void;
-    serviceDeleteMessage: string;
+    visitDeleteMessage: string;
 }
 
 export default class VisitDashboardList extends BasePage<VisitDashboardListProperties> {
@@ -42,7 +42,7 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
                     showDeleteDialog: false,
                 })
             },
-            serviceDeleteMessage: ""
+            visitDeleteMessage: ""
         };
     }
 
@@ -57,16 +57,38 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
         EventRegister.off("AUTH_EVENT", this.authEventHandler.bind(this));
     }
 
-    private getDeleteHandler(serviceId: number) {
+    private getDeleteHandler(visitId: number) {
         return () => {
             this.setState({
                 showDeleteDialog: true,
                 deleteDialogYesHandler: () => {
-                   
-                }
+                    VisitService.deleteVisit(visitId)
+                    .then(res => {
+                        let messageToShow = res ? "Poseta obrisana!" : "Došlo je do greške prilikom brisanja posete"
+
+                        this.setState({
+                            visitDeleteMessage: messageToShow
+                        });
+                        
+                        if (res) {
+                            this.getVisits();   
+                        }
+
+                        this.setState({
+                            showDeleteDialog: false
+                        });
+
+                        setTimeout(() => {
+                            this.setState({
+                                visitDeleteMessage: ""
+                            });
+                        }, 2000);
+                    })
+                 }
             });
-        };
+        }
     }
+    
 
     private authEventHandler(status: string) {
         if (status === "force_login") {
@@ -82,7 +104,7 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
                 if (services.length === 0) {                   
                     return this.setState({
                         services: [],
-                        errorMessage: "Nije moguće učitati listu usluga klinike"
+                        errorMessage: "Nema dostupnih usluga"
                     });
                 }
 
@@ -102,8 +124,8 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
             .then(visits => {
                 if (visits.length === 0) {                   
                     return this.setState({
-                        services: [],
-                        errorMessage: "Nije moguće učitati listu poseta"
+                        visits: [],
+                        errorMessage: "Nema dostupnih poseta"
                     });
                 }
 
@@ -136,7 +158,7 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
                 <h2>Spisak poseta</h2>
                 <Link className="btn btn-success" to={"/dashboard/patient/" + this.getPatientId() + "/visit/add"}>&#43; Nova poseta</Link>
                 
-                <p>{ this.state.serviceDeleteMessage }</p>
+                <p>{ this.state.visitDeleteMessage }</p>
                 
                 <table className="table table-sm">
                     <thead>
@@ -172,7 +194,7 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
                                     <td>
                                         <Link className="btn btn-primary btn-sm" to= { "/dashboard/patient/visit/" + visit.visitId }>Detalji</Link>
                                         <Link className="btn btn-secondary btn-sm mx-1" to= { "/dashboard/patient/visit/edit/" + visit.visitId }>Izmeni usluge</Link>
-                                        <Button onClick={ () => {} } size="sm" variant="danger">
+                                        <Button onClick={ this.getDeleteHandler(visit.visitId) } size="sm" variant="danger">
                                             Obriši / Sakrij
                                         </Button>
                                     </td>

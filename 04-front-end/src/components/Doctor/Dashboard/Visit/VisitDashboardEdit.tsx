@@ -252,7 +252,7 @@ export default class VisitDashboardEdit extends BasePage<VisitDashboardEditPrope
                                         <Col xs={12} md={{ span: 10, offset: 1 }}>
                                         {
                                             this.state.activeVisitServices.map((vsr, index) => (
-                                                <Card className="my-3">
+                                                <Card key={"visit-edit-element-" + index} className="my-3">
                                                     <Card.Body>
                                                         <Card.Text as="div">
                                                             <Form.Group>

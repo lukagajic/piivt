@@ -282,7 +282,7 @@ export default class VisitDashboardAdd extends BasePage<VisitDashboardAddPropert
                                             </Card>
                                         {
                                             this.state.activeVisitServices.map((vsr, index) => (
-                                                <Card className="my-3">
+                                                <Card key={"visit-add-element" + index } className="my-3">
                                                     <Card.Body>
                                                         <Card.Text as="div">
                                                             <Form.Group>

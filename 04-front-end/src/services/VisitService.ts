@@ -104,4 +104,16 @@ export default class VisitService {
             })
         });        
     }
+
+    public static deleteVisit(visitId: number): Promise<boolean> {
+        return new Promise<boolean>(resolve => {
+            api("delete", "/visit/" + visitId, "doctor")
+            .then(res => {
+                console.log(res);
+                if (res.status !== "ok") return resolve(false);
+                if (res.data?.errorCode !== 0) return resolve(false);
+                resolve(true);
+            });
+        });
+    }
 }

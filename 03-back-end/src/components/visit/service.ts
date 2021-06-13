@@ -456,16 +456,19 @@ class VisitService extends BaseService<VisitModel> {
     }
 
     public async deleteById(visitId: number): Promise<IErrorResponse | null> {
-        return new Promise<IErrorResponse>(async resolve => {
+        return await this.deleteByIdFromTable("visit", visitId);
+        /* return new Promise<IErrorResponse>(async resolve => {
+            
+
             const currentVisit = await this.getById(visitId, {
                 loadServices: true
             });
 
             if (currentVisit === null) {
                 return resolve(null);
-            }
+            } */
 
-            this.db.beginTransaction()
+            /* this.db.beginTransaction()
                 .then(async () => {
                     if (await this.deleteVisitServiceRecords(visitId)) return;
                     throw { errno: -1002, sqlMessage: "Nije moguće obrisati sve usluge vezane za ovu posetu!" };
@@ -488,7 +491,7 @@ class VisitService extends BaseService<VisitModel> {
                         errorMessage: error?.sqlMessage
                     });
                 })
-        });
+        }); */
     }
 
     private calculatePatientAge(birthDay: number, birthMonth: number, birthYear: number) {
