@@ -3,7 +3,9 @@ import PatientModel from '../patient/model';
 import DoctorModel from '../doctor/model';
 import ServiceModel from '../service/model';
 
-class Service implements IModel {
+class VisitServiceRecord implements IModel {
+    visitServiceId?: number;
+    visitId: number;
     serviceId: number;
     description: string;
     service?: ServiceModel;
@@ -11,7 +13,7 @@ class Service implements IModel {
 
 class VisitModel implements IModel {
     visitId: number;
-    createdAt: Date;
+    visitedAt: Date;
     description: string;
     patientId: number;
     doctorId: number;
@@ -19,10 +21,10 @@ class VisitModel implements IModel {
     patient: PatientModel;
     doctor: DoctorModel;
     editorDoctor: DoctorModel;
-    services: Service[];
+    services: VisitServiceRecord[];
     isActive: boolean;
     totalPrice: number;
 }
 
 export default VisitModel;
-export { Service as VisitServiceRecord };
+export { VisitServiceRecord };

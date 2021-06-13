@@ -17,6 +17,9 @@ import ServiceDashboardEdit from '../Doctor/Dashboard/Service/ServiceDashboardEd
 import PatientDashboardList from '../Doctor/Dashboard/Patient/PatientDashboardList';
 import PatientDashboardAdd from '../Doctor/Dashboard/Patient/PatientDashboardAdd';
 import PatientDashboardEdit from '../Doctor/Dashboard/Patient/PatientDashboardEdit';
+import VisitDashboardList from '../Doctor/Dashboard/Visit/VisitDashboardList';
+import VisitDashboardPage from '../Doctor/Dashboard/Visit/VisitDashboardPage';
+import VisitDashboardEdit from '../Doctor/Dashboard/Visit/VisitDashboardEdit';
 
 class ApplicationState {
   authorizedRole: "doctor" | "administrator" | "visitor" = "visitor";
@@ -96,6 +99,9 @@ class Application extends Component {
               <Route path="/dashboard/service/add" component={ServiceDashboardAdd} />
               <Route path="/dashboard/service/edit/:sId" component={ServiceDashboardEdit} />
               <Route path="/dashboard/patient" exact component={PatientDashboardList} />
+              <Route path="/dashboard/patient/visit/:vId" exact component={VisitDashboardPage} />
+              <Route path="/dashboard/patient/visit/edit/:vId/" component={VisitDashboardEdit} />              
+              <Route path="/dashboard/patient/:pId/visit" exact component={VisitDashboardList} />
               <Route path="/dashboard/patient/add"  component={PatientDashboardAdd} />
               <Route path="/dashboard/patient/edit/:pId" component={PatientDashboardEdit} />
               <Route path="/profile">

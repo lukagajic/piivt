@@ -3,7 +3,6 @@ import Ajv from 'ajv';
 const ajv = new Ajv();
 
 interface IAddVisit {
-    description: string;
     patientId: number;
     doctorId: number;
     services: {
@@ -16,11 +15,6 @@ interface IAddVisit {
 const IAddVisitValidator = ajv.compile({
     type: "object",
     properties: {
-        description: {
-            type: "string",
-            minLength: 2,
-            maxLength: 64 * 1024,
-        },
         patientId: {
             type: "integer",
             minimum: 1,
@@ -55,7 +49,6 @@ const IAddVisitValidator = ajv.compile({
         },
     },
     required: [
-        "description",
         "patientId",
         "doctorId",
         "services"

@@ -7,7 +7,6 @@ import ServiceModel from '../service/model';
 import IErrorResponse from '../../common/IErrorResponse.inteface';
 import { IAddVisit } from './dto/AddVisit';
 import { IEditVisit } from './dto/EditVisit';
-import { timeStamp } from 'console';
 
 class VisitModelAdapterOptions implements IModelAdapterOptionsInterface {
     loadPatient: boolean = false;
@@ -21,7 +20,7 @@ class VisitService extends BaseService<VisitModel> {
         const item: VisitModel = new VisitModel();
 
         item.visitId = +(data?.visit_id);
-        item.createdAt = new Date(data?.created_at);
+        item.visitedAt = new Date(data?.visited_at);
         item.description = data?.description;
         item.patientId = +(data?.patient_id);
         item.doctorId = +(data?.doctor_id);
@@ -89,6 +88,8 @@ class VisitService extends BaseService<VisitModel> {
 
         for (const row of rows as any) {
             items.push({
+                visitServiceId: +(row?.visit_service_id),
+                visitId: +(row?.visit_id),
                 serviceId: +(row?.service_id),
                 description: row?.description,
                 service: await this.services.serviceService.getById(row?.service_id) as ServiceModel 
@@ -102,6 +103,101 @@ class VisitService extends BaseService<VisitModel> {
         options: Partial<VisitModelAdapterOptions> = { }
     ): Promise<VisitModel[] | IErrorResponse> {
         return await this.getAllFromTable<VisitModelAdapterOptions>("visit", options);
+    }
+
+    public async getActiveByVisitId(visitId: number, options: Partial<VisitModelAdapterOptions> = { }): Promise<VisitModel | null | IErrorResponse> {
+        return new Promise<VisitModel | null | IErrorResponse>(async resolve => {
+            const sql: string = 
+            `
+                SELECT
+                    *
+                FROM
+                    visit
+                INNER JOIN
+                    patient
+                ON
+                    patient.patient_id = visit.patient_id
+                INNER JOIN
+                    doctor
+                ON
+                    doctor.doctor_id = visit.doctor_id
+                WHERE
+                    patient.is_active = 1
+                AND
+                    visit.is_active=  1
+                AND
+                    doctor.is_active = 1
+                AND
+                    visit.visit_id = ?
+            `;
+
+            this.db.execute(sql, [ visitId ])
+                .then(async result => {
+                    const [rows, columns] = result;
+
+                    if (!Array.isArray(rows)) {
+                        resolve(null);
+                        return;
+                    }
+        
+                    if (rows.length === 0) {
+                        resolve(null);
+                        return;
+                    }
+        
+                    resolve(await this.adaptModel(rows[0], options));
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });            
+        });
+    }
+
+    public async getAllActiveByPatientId(patientId: number, options: Partial<VisitModelAdapterOptions> = { }): Promise<VisitModel[] | IErrorResponse> {
+        return new Promise<VisitModel[] | IErrorResponse>(async resolve => {
+            const sql: string = 
+            `
+                SELECT
+                    visit.*
+                FROM
+                    visit
+                INNER JOIN
+                    patient
+                ON
+                    visit.patient_id = patient.patient_id
+                WHERE
+                    patient.patient_id = ?
+                AND
+                    patient.is_active = 1
+                AND
+                    visit.is_active = 1;
+            `;
+
+            this.db.execute(sql, [patientId])
+                .then(async result => {
+                    const rows = result[0];
+
+                    const lista: VisitModel[] = [];
+
+                    if (Array.isArray(rows)) {
+                        for (const row of rows) {
+                            lista.push(
+                                await this.adaptModel(row, options)
+                            );
+                        }
+                    }        
+                    resolve(lista);
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
+        });
     }
 
     public async getById(visitId: number, options: Partial<VisitModelAdapterOptions> = { }): Promise<VisitModel | null | IErrorResponse> {
@@ -122,7 +218,6 @@ class VisitService extends BaseService<VisitModel> {
                             editor__doctor_id = ?;
                     `
                     this.db.execute(sql, [
-                        data.description,
                         data.patientId,
                         data.doctorId,
                         data.doctorId
@@ -193,44 +288,59 @@ class VisitService extends BaseService<VisitModel> {
 
         `
         return this.db.execute(sql, [
-            data.description,
             editorDoctorId,
             visitId
         ]);
     }
 
-    private insertOrUpdateServiceRecord(visitId: number, vsr: VisitServiceRecord) {
-        const sql: string = `
+    private insertOrUpdateServiceRecord(vsr: VisitServiceRecord) {
+        let sql: string = `
             INSERT
                 visit_service
             SET
-                visit_id = ?,
                 service_id = ?,
-                description = ?
-            ON DUPLICATE KEY
-            UPDATE
+                visit_id = ?,
                 description = ?;
         `;
+
+        if (vsr.visitServiceId !== 0) {
+            console.log('Ovde smo usli');
+            sql = `
+                UPDATE
+                    visit_service
+                SET
+                    service_id = ?,
+                    visit_id = ?,
+                    description = ?
+                WHERE
+                    visit_service_id = ?;
+            `;
+
+            return this.db.execute(sql, [
+                vsr.serviceId,
+                vsr.visitId,
+                vsr.description,
+                vsr.visitServiceId
+            ]);
+        }
+
         return this.db.execute(sql, [
-            visitId,
             vsr.serviceId,
+            vsr.visitId,
             vsr.description,
-            vsr.description
         ]);
     }
 
-    private deleteVisitServiceRecord(visitId: number, serviceId: number) {
+    private deleteVisitServiceRecord(visitServiceId: number) {
         const sql: string = `
             DELETE FROM
                 visit_service
             WHERE
-                visit_id = ? AND
-                service_id = ?;
+                visit_service_id = ?
         `;
 
         return this.db.execute(sql, [
-            visitId,
-            serviceId
+            visitServiceId
         ]);
     }
 
@@ -263,12 +373,12 @@ class VisitService extends BaseService<VisitModel> {
                     })
                 })
                 .then(async () => {
-                    const willHaveServiceRecords = data.services.map(vsr => vsr.serviceId);
-                    const currentServiceRecords = (currentVisit as VisitModel).services.map(vsr => vsr.serviceId);
+                    const willHaveServiceRecords = data.services.map(vsr => vsr.visitServiceId);
+                    const currentServiceRecords = (currentVisit as VisitModel).services.map(vsr => vsr.visitServiceId);
 
                     for (const currentServiceRecord of currentServiceRecords) {
                         if (!willHaveServiceRecords.includes(currentServiceRecord)) {
-                            this.deleteVisitServiceRecord(visitId, currentServiceRecord)
+                            this.deleteVisitServiceRecord(currentServiceRecord)
                             .catch(error => {
                                 rollbackAndResolve({
                                     errno: error?.errno,
@@ -280,7 +390,8 @@ class VisitService extends BaseService<VisitModel> {
                 })
                 .then(async () => {
                     for (const vsr of data.services) {
-                        this.insertOrUpdateServiceRecord(visitId, vsr)
+                        console.log(vsr);
+                        this.insertOrUpdateServiceRecord(vsr)
                         .catch(error => {
                             rollbackAndResolve({
                                 errno: error?.errno,

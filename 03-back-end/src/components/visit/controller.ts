@@ -12,6 +12,53 @@ class VisitController extends BaseController {
         }));
     }
 
+    async getAllActiveByPatientId(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const id: string = req.params.id;
+
+        const patientId: number = +id;
+
+        if (patientId <= 0) {
+            res.sendStatus(400);
+            return;
+        }
+        
+        res.send(await this.services.visitService.getAllActiveByPatientId(patientId, {
+            loadServices: true,
+            loadDoctor: true,
+            loadEditorDoctor: true
+        }));
+    }
+
+    async getActiveById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const id: string = req.params.id;
+
+        const visitId: number = +id;
+
+        if (visitId <= 0) {
+            res.sendStatus(400);
+            return;
+        }
+
+        const data: VisitModel | null | IErrorResponse = await this.services.visitService.getActiveByVisitId(visitId, {
+            loadServices: true,
+            loadDoctor: true,
+            loadEditorDoctor: true,
+            loadPatient: true,
+        });
+
+        if (data === null) {
+            res.sendStatus(404);
+            return;
+        }
+
+        if (data instanceof VisitModel) {
+            res.send(data);
+            return;
+        }
+        
+        res.status(500).send(data);
+    }
+
     async getById(req: express.Request, res: express.Response, next: express.NextFunction) {
         const id: string = req.params.id;
 

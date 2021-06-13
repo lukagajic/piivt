@@ -3,9 +3,9 @@ import Ajv from 'ajv';
 const ajv = new Ajv();
 
 interface IEditVisit {
-    description: string;
-    editorDoctorId: number;
     services: {
+        visitServiceId: number;
+        visitId: number;
         serviceId: number;
         description: string;
     }[];
@@ -15,22 +15,20 @@ interface IEditVisit {
 const IEditVisitValidator = ajv.compile({
     type: "object",
     properties: {
-        description: {
-            type: "string",
-            minLength: 2,
-            maxLength: 64 * 1024,
-        },
-        editorDoctorId: {
-            type: "integer",
-            minimum: 1,
-        },
         services: {
             type: "array",
             minItems: 1,
-            uniqueItems: true,
             items: {
                 type: "object",
                 properties: {
+                    visitServiceId: {
+                        type: "number",
+                        minimum: 0,
+                    },
+                    visitId: {
+                        type: "number",
+                        minimum: 1,
+                    },
                     serviceId: {
                         type: "number",
                         minimum: 1,
@@ -42,6 +40,8 @@ const IEditVisitValidator = ajv.compile({
                     }
                 },
                 required: [
+                    "visitServiceId",
+                    "visitId",
                     "serviceId",
                     "description",
                 ],
@@ -50,8 +50,6 @@ const IEditVisitValidator = ajv.compile({
         },
     },
     required: [
-        "description",
-        "editorDoctorId",
         "services"
     ],
     additionalProperties: false
