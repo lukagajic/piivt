@@ -16,6 +16,15 @@ export interface IEditVisit {
     }[];
 }
 
+export interface IAddVisit {
+    patientId: number;
+    visitedAt: string;
+    services: {
+        serviceId: number;
+        description: string;
+    }[];
+}
+
 export default class VisitService {
     public static getAllByPatient(patientId: number): Promise<VisitModel[]> {
         return new Promise<VisitModel[]>(resolve => {
@@ -65,16 +74,34 @@ export default class VisitService {
                     }
                 }
 
-                /* if (res?.data?.errorCode === 1062) {
-                    return resolve({
-                        success: false,
-                        message: "Kategorija sa tim imenom već postoji.",
-                    });
-                } */
                 return resolve({
                     success: true,
                 });
             })
         });
+    }
+
+    public static addVisit(data: IAddVisit): Promise<IResult> {
+        return new Promise<IResult>(resolve => {
+            api("post", "/visit", "doctor", data)
+            .then(res => {
+                console.log("RES: ", res);
+                if (res?.status === "error") {
+                    if (Array.isArray(res?.data?.data)) {
+                        const field = res?.data?.data[0]?.instancePath.replace('/', '');
+                        const msg   = res?.data?.data[0]?.message;
+                        const error = field + " " + msg;
+                        return resolve({
+                            success: false,
+                            message: error,
+                        });
+                    }
+                }
+
+                return resolve({
+                    success: true,
+                });
+            })
+        });        
     }
 }

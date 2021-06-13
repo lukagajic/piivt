@@ -17,7 +17,6 @@ const IEditVisitValidator = ajv.compile({
     properties: {
         services: {
             type: "array",
-            minItems: 1,
             items: {
                 type: "object",
                 properties: {

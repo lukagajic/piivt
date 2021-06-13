@@ -4,6 +4,7 @@ import VisitModel from './model';
 import IErrorResponse from '../../common/IErrorResponse.inteface';
 import { IAddVisit, IAddVisitValidator } from './dto/AddVisit';
 import { IEditVisit, IEditVisitValidator } from './dto/EditVisit';
+import PatientModel from '../patient/model';
 
 class VisitController extends BaseController {
     async getAll(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -86,7 +87,12 @@ class VisitController extends BaseController {
         res.status(500).send(data);
     }
 
-    async add(req: express.Request, res: express.Response, next: express.NextFunction) {        
+    async add(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
         const data = req.body;
 
         if (!IAddVisitValidator(data)) {
@@ -94,9 +100,31 @@ class VisitController extends BaseController {
             return;
         }
 
-        const result: VisitModel | IErrorResponse = await this.services.visitService.add(data as IAddVisit);
+        const validData = data as IAddVisit;
 
-        res.send(result);
+        const patientId: number = validData.patientId;
+
+        if (patientId <= 0) {
+            res.status(400).send("Invalid ID number");
+            return;
+        }
+
+        const patientData: PatientModel | null | IErrorResponse = await this.services.patientService.getById(patientId);
+
+        if (patientData === null) {
+            res.sendStatus(404);
+            return;
+        }
+
+        if (patientData instanceof PatientModel) {
+            if (patientData.doctorId !== req?.authorized.id) {
+                return res.status(403).send("Ovo nije vaš pacijent!");
+            }
+
+            
+            const result: VisitModel | IErrorResponse = await this.services.visitService.add(req.authorized.id, data as IAddVisit);
+            res.send(result);
+        }        
     }
 
     async edit(req: express.Request, res: express.Response) {

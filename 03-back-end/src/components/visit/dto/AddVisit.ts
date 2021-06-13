@@ -4,7 +4,7 @@ const ajv = new Ajv();
 
 interface IAddVisit {
     patientId: number;
-    doctorId: number;
+    visitedAt: string;
     services: {
         serviceId: number;
         description: string;
@@ -19,14 +19,13 @@ const IAddVisitValidator = ajv.compile({
             type: "integer",
             minimum: 1,
         },
-        doctorId: {
-            type: "integer",
-            minimum: 1,
+        visitedAt: {
+            type: "string",
+            minLength: 10,
+            maxLength: 10
         },
         services: {
             type: "array",
-            minItems: 1,
-            uniqueItems: true,
             items: {
                 type: "object",
                 properties: {
@@ -50,7 +49,7 @@ const IAddVisitValidator = ajv.compile({
     },
     required: [
         "patientId",
-        "doctorId",
+        "visitedAt",
         "services"
     ],
     additionalProperties: false

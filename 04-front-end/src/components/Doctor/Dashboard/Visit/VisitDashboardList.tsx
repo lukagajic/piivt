@@ -134,7 +134,7 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
                 { this.state.errorMessage.length > 0 && <p>{ this.state.errorMessage }</p> }
 
                 <h2>Spisak poseta</h2>
-                <Link className="btn btn-success" to="/dashboard/service/add">&#43; Nova poseta</Link>
+                <Link className="btn btn-success" to={"/dashboard/patient/" + this.getPatientId() + "/visit/add"}>&#43; Nova poseta</Link>
                 
                 <p>{ this.state.serviceDeleteMessage }</p>
                 

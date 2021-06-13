@@ -204,7 +204,7 @@ class VisitService extends BaseService<VisitModel> {
         return await this.getByIdFromTable<VisitModelAdapterOptions>("visit", visitId, options);
     }
 
-    public async add(data: IAddVisit): Promise<VisitModel | IErrorResponse > {
+    public async add(doctorId: number, data: IAddVisit): Promise<VisitModel | IErrorResponse > {
         return new Promise<VisitModel | IErrorResponse>(async resolve => {
             this.db.beginTransaction()
                 .then(() => {
@@ -212,15 +212,16 @@ class VisitService extends BaseService<VisitModel> {
                         INSERT
                             visit
                         SET
-                            description = ?,
                             patient_id = ?,
+                            visited_at = ?,
                             doctor_id = ?,
                             editor__doctor_id = ?;
                     `
                     this.db.execute(sql, [
                         data.patientId,
-                        data.doctorId,
-                        data.doctorId
+                        data.visitedAt,
+                        doctorId,
+                        doctorId
                     ]).then(async (res: any) => {
                         const newVisitId: number = +(res[0]?.insertId);
 
