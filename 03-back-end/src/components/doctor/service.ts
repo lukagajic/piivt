@@ -81,8 +81,6 @@ class DoctorService extends BaseService<DoctorModel> {
                     phone_number = ?
                 ON DUPLICATE KEY
                 UPDATE
-                    doctor
-                SET
                     is_active = 1'
             `;
 

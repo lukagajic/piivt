@@ -140,8 +140,6 @@ class PatientService extends BaseService<PatientModel> {
                     doctor_id = ?;
                 ON DUPLICATE KEY
                 UPDATE
-                    patient
-                SET
                     is_active = 1;
             `;
 

@@ -111,8 +111,6 @@ class ServiceService extends BaseService<ServiceModel> {
                     category_id = ?
                 ON DUPLICATE KEY
                 UPDATE
-                    service
-                SET
                     is_active = 1;
             `;
 
