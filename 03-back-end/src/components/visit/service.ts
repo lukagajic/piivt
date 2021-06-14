@@ -21,7 +21,6 @@ class VisitService extends BaseService<VisitModel> {
 
         item.visitId = +(data?.visit_id);
         item.visitedAt = new Date(data?.visited_at);
-        item.description = data?.description;
         item.patientId = +(data?.patient_id);
         item.doctorId = +(data?.doctor_id);
         item.editorDoctorId = +(data?.editor__doctor_id);

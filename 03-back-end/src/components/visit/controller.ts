@@ -9,7 +9,10 @@ import PatientModel from '../patient/model';
 class VisitController extends BaseController {
     async getAll(req: express.Request, res: express.Response, next: express.NextFunction) {
         res.send(await this.services.visitService.getAll({
-            loadServices: true
+            loadServices: true,
+            loadDoctor: true,
+            loadEditorDoctor: true,
+            loadPatient: true
         }));
     }
 

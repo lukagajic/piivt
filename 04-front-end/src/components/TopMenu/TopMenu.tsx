@@ -34,7 +34,7 @@ export default class TopMenu extends Component<TopMenuProperties>{
             return (
                 <Nav fill variant="tabs" className="justify-content-center">
                     <Nav.Item>
-                        <Link className="nav-link" to="/dashbord/visits">
+                        <Link className="nav-link" to="/administrator/dashboard/visit">
                             Evidencija svih poseta
                         </Link>
                     </Nav.Item>

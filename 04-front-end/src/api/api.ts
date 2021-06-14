@@ -155,3 +155,16 @@ export function saveIdentity(role: ApiRole, identity: string) {
 export function getIdentity(role: ApiRole) {
     return localStorage.getItem(role + "-identity") ?? "";
 }
+
+export function isRoleLoggedIn(role: ApiRole): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+        api("get", "/auth/" + role + "/ok", role)
+        .then(res => {
+            if (res?.data === "OK") return resolve(true);
+            resolve(false);
+        })
+        .catch(() => {
+            resolve(false);
+        })
+    });
+}

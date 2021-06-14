@@ -26,6 +26,23 @@ export interface IAddVisit {
 }
 
 export default class VisitService {
+    public static getAll(): Promise<VisitModel[]> {
+        return new Promise<VisitModel[]>(resolve => {
+            api("get", "/visit/", "administrator")
+            .then(res => {
+                if (res?.status !== "ok") {
+                    if (res.status === "login") {
+                        EventRegister.emit("AUTH_EVENT", "force_login");
+                    }
+
+                    return resolve([]);
+                }
+
+                resolve(res.data as VisitModel[]);
+            });
+        });
+    }
+
     public static getAllByPatient(patientId: number): Promise<VisitModel[]> {
         return new Promise<VisitModel[]>(resolve => {
             api("get", "/visit/by-patient/" + patientId, "doctor")

@@ -14,7 +14,6 @@ class VisitServiceRecord implements IModel {
 class VisitModel implements IModel {
     visitId: number;
     visitedAt: Date;
-    description: string;
     patientId: number;
     doctorId: number;
     editorDoctorId: number;
