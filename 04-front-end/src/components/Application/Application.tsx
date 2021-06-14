@@ -3,7 +3,7 @@ import './Application.sass';
 
 import { Container } from "react-bootstrap";
 import TopMenu from '../TopMenu/TopMenu';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import CategoryDashboardList from '../Doctor/Dashboard/Category/CategoryDashboardList';
 import DoctorLogin from '../Doctor/DoctorLogin';
 import EventRegister from '../../api/EventRegister';
@@ -85,8 +85,15 @@ class Application extends Component {
   }
 
   render(): JSX.Element {
+    
     return (
       <BrowserRouter>
+        {
+          (this.state.authorizedRole === "doctor" && window.location.pathname === "/") && <Redirect to="/dashboard/category" />
+        }
+        {
+          (this.state.authorizedRole === "administrator" && window.location.pathname === "/") && <Redirect to="/administrator/dashboard/visit" />
+        }
         <Container className="Application">
           <div className="Application-header">
               <img className="Application-logo" src="/logo.jpg" alt="E-medic Logo" />
