@@ -109,6 +109,11 @@ class ServiceService extends BaseService<ServiceModel> {
                     price_for_children = ?,
                     price_for_seniors = ?,
                     category_id = ?
+                ON DUPLICATE KEY
+                UPDATE
+                    service
+                SET
+                    is_active = 1;
             `;
 
             this.db.execute(sql, 

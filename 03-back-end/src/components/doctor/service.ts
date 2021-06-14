@@ -78,7 +78,12 @@ class DoctorService extends BaseService<DoctorModel> {
                     born_at = ?,
                     gender = ?,
                     title = ?,
-                    phone_number = ?;
+                    phone_number = ?
+                ON DUPLICATE KEY
+                UPDATE
+                    doctor
+                SET
+                    is_active = 1'
             `;
 
             this.db.execute(sql, [

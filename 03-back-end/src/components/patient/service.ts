@@ -138,6 +138,11 @@ class PatientService extends BaseService<PatientModel> {
                     phone_number = ?,
                     address = ?,
                     doctor_id = ?;
+                ON DUPLICATE KEY
+                UPDATE
+                    patient
+                SET
+                    is_active = 1;
             `;
 
             this.db.execute(sql, [
