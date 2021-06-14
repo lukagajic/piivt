@@ -106,9 +106,6 @@ class Application extends Component {
               <Route path="/dashboard/patient/:pId/visit" exact component={VisitDashboardList} />
               <Route path="/dashboard/patient/add"  component={PatientDashboardAdd} />
               <Route path="/dashboard/patient/edit/:pId" component={PatientDashboardEdit} />
-              <Route path="/profile">
-                Moj nalog
-              </Route>
               <Route path="/doctor/login" component={DoctorLogin} />
               <Route path="/doctor/logout" component={DoctorLogout} />
 
