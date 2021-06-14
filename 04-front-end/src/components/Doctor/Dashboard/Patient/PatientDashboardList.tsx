@@ -168,7 +168,7 @@ export default class PatientDashboardList extends BasePage<{}> {
                                         { patient.address }
                                     </td>
                                     <td>
-                                        <Link className="btn btn-primary btn-sm" to= { "/dashboard/patient/" + patient.patientId + "/visit"}>Sve posete</Link>
+                                        <Link className="btn btn-primary btn-sm" to= { "/dashboard/patient/" + patient.patientId + "/visit"}>Karton pacijenta</Link>
                                         <Link className="btn btn-secondary btn-sm mx-1" to= { "/dashboard/patient/edit/" + patient.patientId }>Izmeni</Link>
                                         <Button onClick={ this.getDeleteHandler(patient.patientId) } size="sm" variant="danger">
                                             Obriši / Sakrij
