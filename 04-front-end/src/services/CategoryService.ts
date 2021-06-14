@@ -12,6 +12,7 @@ export default class CategoryService {
         return new Promise<CategoryModel[]>(resolve => {
             api("get", "/category", "doctor")
             .then(res => {
+
                 if (res?.status !== "ok") {
                     if (res.status === "login") {
                         EventRegister.emit("AUTH_EVENT", "force_login");
@@ -56,7 +57,7 @@ export default class CategoryService {
 
     public static addNewCategory(name: string): Promise<IResult> {
         return new Promise<IResult>(resolve => {
-            api("post", "/category", "administrator", { name: name })
+            api("post", "/category", "doctor", { name: name })
             .then(res => {
                 if (res?.status === "error") {
                     if (Array.isArray(res?.data?.data)) {
