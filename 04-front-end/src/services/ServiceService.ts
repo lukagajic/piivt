@@ -5,6 +5,7 @@ import api from '../api/api';
 export interface IAddService {
     name: string;
     description: string;
+    catalogueCode: string;
     price: number;
     priceForChildren: number;
     priceForSeniors: number;
@@ -19,6 +20,7 @@ interface IResult {
 export interface IEditService {
     name: string;
     description: string;
+    catalogueCode: string;
     price: number;
     priceForChildren: number;
     priceForSeniors: number;
@@ -47,6 +49,7 @@ export default class ServiceService {
         return new Promise<boolean>(resolve => {
             api("post", "/service", "doctor", data)
             .then(res => {
+                console.log(res);
                 if (res.status !== "ok") return resolve(false);
                 if (res.data?.errorCode !== undefined) return resolve(false);
                 resolve(true);

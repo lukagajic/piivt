@@ -22,6 +22,7 @@ class ServiceService extends BaseService<ServiceModel> {
         item.serviceId = +(data?.service_id);
         item.name = data?.name;
         item.description = data?.description;
+        item.catalogueCode = data?.catalogue_code;
         item.price = +(data?.price);
         item.priceForChildren = +(data?.price_for_children);
         item.priceForSeniors = +(data?.price_for_seniors);
@@ -105,6 +106,7 @@ class ServiceService extends BaseService<ServiceModel> {
                 SET
                     name = ?,
                     description = ?,
+                    catalogue_code = ?,
                     price = ?,
                     price_for_children = ?,
                     price_for_seniors = ?,
@@ -118,6 +120,7 @@ class ServiceService extends BaseService<ServiceModel> {
                 [ 
                     data.name,
                     data.description,
+                    data.catalogueCode,
                     data.price,
                     data.priceForChildren,
                     data.priceForSeniors,
@@ -156,6 +159,7 @@ class ServiceService extends BaseService<ServiceModel> {
                 SET
                     name = ?,
                     description = ?,
+                    catalogue_code = ?,
                     price = ?,
                     price_for_children = ?,
                     price_for_seniors = ?,
@@ -168,6 +172,7 @@ class ServiceService extends BaseService<ServiceModel> {
                 [ 
                     data.name,
                     data.description,
+                    data.catalogueCode,
                     data.price,
                     data.priceForChildren,
                     data.priceForSeniors,

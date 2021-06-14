@@ -4,6 +4,7 @@ class ServiceModel implements IModel {
     serviceId: number;
     name: string;
     description: string;
+    catalogueCode: string;
     price: number;
     priceForChildren: number;
     priceForSeniors: number;

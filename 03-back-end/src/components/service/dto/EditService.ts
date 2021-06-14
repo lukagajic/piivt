@@ -3,6 +3,7 @@ import Ajv from "ajv";
 interface IEditService {
     name: string;
     description: string;
+    catalogueCode: string;
     price: number;
     priceForChildren: number;
     priceForSeniors: number;
@@ -22,7 +23,12 @@ const IEditServiceValidator = ajv.compile({
         description: {
             type: "string",
             minLength: 2,
-            maxLength: 1500
+            maxLength: 255
+        },
+        catalogueCode: {
+            type: "string",
+            minLength: 7,
+            maxLength: 7
         },
         price: {
             type: "integer",
@@ -47,6 +53,7 @@ const IEditServiceValidator = ajv.compile({
     required: [
         "name", 
         "description", 
+        "catalogueCode",
         "price", 
         "priceForChildren", 
         "priceForSeniors", 

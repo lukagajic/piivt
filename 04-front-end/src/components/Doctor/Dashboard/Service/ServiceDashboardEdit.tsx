@@ -26,6 +26,7 @@ interface ServiceDashboardEditState {
 
     newServiceName: string;
     newServiceDescription: string;
+    newServiceCatalogueCode: string;
     newServicePrice: string;
     newServicePriceForChildren: string;
     newServicePriceForSeniors: string;
@@ -47,6 +48,7 @@ export default class ServiceDashboardEdit extends BasePage<ServiceDashboardEditP
 
             newServiceName: "",
             newServiceDescription: "",
+            newServiceCatalogueCode: "",
             newServicePrice: "",
             newServicePriceForChildren: "",
             newServicePriceForSeniors: "",
@@ -84,6 +86,7 @@ export default class ServiceDashboardEdit extends BasePage<ServiceDashboardEditP
 
                     newServiceName: res?.name,
                     newServiceDescription: res?.description,
+                    newServiceCatalogueCode: res?.catalogueCode,
                     newServicePrice: res?.price + "",
                     newServicePriceForChildren: res?.priceForChildren + "",
                     newServicePriceForSeniors: res?.priceForSeniors + "",
@@ -92,7 +95,7 @@ export default class ServiceDashboardEdit extends BasePage<ServiceDashboardEditP
             });
     }
 
-    private onChangeInput(field: "newServiceName" | "newServiceDescription" | "newServicePrice" | "newServicePriceForChildren" | "newServicePriceForSeniors"): (event: React.ChangeEvent<HTMLInputElement>) => void {
+    private onChangeInput(field: "newServiceName" | "newServiceDescription" | "newServiceCatalogueCode" | "newServicePrice" | "newServicePriceForChildren" | "newServicePriceForSeniors"): (event: React.ChangeEvent<HTMLInputElement>) => void {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
             this.setState({
                 [field]: event.target.value,
@@ -111,6 +114,7 @@ export default class ServiceDashboardEdit extends BasePage<ServiceDashboardEditP
     private isFormValid(): boolean {               
          return this.state.newServiceName.length > 2 &&
             this.state.newServiceDescription.length > 2 &&
+            this.state.newServiceCatalogueCode.length === 7 &&
             +(this.state.newServicePrice) >= 150 &&
             +(this.state.newServicePriceForChildren) >= 150 &&
             +(this.state.newServicePriceForSeniors) >= 150;        
@@ -147,6 +151,7 @@ export default class ServiceDashboardEdit extends BasePage<ServiceDashboardEditP
         const data: IEditService = {
             name: this.state.newServiceName,
             description: this.state.newServiceDescription,
+            catalogueCode: this.state.newServiceCatalogueCode,
             price: Number(this.state.newServicePrice),
             priceForChildren: Number(this.state.newServicePriceForChildren),
             priceForSeniors: Number(this.state.newServicePriceForSeniors),
@@ -224,6 +229,19 @@ export default class ServiceDashboardEdit extends BasePage<ServiceDashboardEditP
                                                     onChange={ this.onChangeInput("newServiceDescription") }
                                                 />
                                                 { this.state.newServiceDescription.length < 2 && (<small className="red-text">Prekratak opis</small>) }
+                                            </Form.Group>
+
+                                            <Form.Group>
+                                                <Form.Label>Kataloški broj:</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Unesite kataloški broj usluge"
+                                                    value={ this.state.newServiceCatalogueCode }
+                                                    maxLength={ 7 }
+                                                    minLength={ 7 }
+                                                    onChange={ this.onChangeInput("newServiceCatalogueCode") }
+                                                />
+                                                { this.state.newServiceCatalogueCode.length !== 7 && (<small className="red-text">Kataloški broj mora imati tačno 7 karaktera</small>) }
                                             </Form.Group>
 
                                             <Form.Group>

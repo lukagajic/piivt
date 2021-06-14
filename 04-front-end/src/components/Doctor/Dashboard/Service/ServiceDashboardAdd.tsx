@@ -10,6 +10,7 @@ import CategoryModel from '../../../../../../03-back-end/src/components/category
 interface ServiceDashboardAddState {
     name: string;
     description: string;
+    catalogueCode: string;
     price: string;
     priceForChildren: string;
     priceForSeniors: string;
@@ -30,6 +31,7 @@ export default class ServiceDashboardAdd extends BasePage<{}> {
         this.state = {
             name: "",
             description: "",
+            catalogueCode: "",
             price: "150",
             priceForChildren: "150",
             priceForSeniors: "150",
@@ -77,7 +79,7 @@ export default class ServiceDashboardAdd extends BasePage<{}> {
             });
     }
 
-    private onChangeInput(field: "name" | "description" | "price" | "priceForChildren" | "priceForSeniors"): (event: React.ChangeEvent<HTMLInputElement>) => void {
+    private onChangeInput(field: "name" | "description" | "price" | "priceForChildren" | "priceForSeniors" | "catalogueCode"): (event: React.ChangeEvent<HTMLInputElement>) => void {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
             this.setState({
                 [field]: event.target.value,
@@ -96,6 +98,7 @@ export default class ServiceDashboardAdd extends BasePage<{}> {
     private isFormValid(): boolean {
         return this.state.name.length > 2 &&
             this.state.description.length > 2 &&
+            this.state.catalogueCode.length === 7 &&
             +(this.state.price) >= 150 &&
             +(this.state.priceForChildren) >= 150 &&
             +(this.state.priceForSeniors) >= 150 &&
@@ -116,6 +119,7 @@ export default class ServiceDashboardAdd extends BasePage<{}> {
         const data: IAddService = {
             name: this.state.name,
             description: this.state.description,
+            catalogueCode: this.state.catalogueCode,
             price: Number(this.state.price),
             priceForChildren: Number(this.state.priceForChildren),
             priceForSeniors: Number(this.state.priceForSeniors),
@@ -186,6 +190,19 @@ export default class ServiceDashboardAdd extends BasePage<{}> {
                                                     onChange={ this.onChangeInput("description") }
                                                 />
                                                 { this.state.description.length < 2 && (<small className="red-text">Prekratak opis</small>) }
+                                            </Form.Group>
+
+                                            <Form.Group>
+                                                <Form.Label>Kataloški broj:</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Unesite kataloški broj usluge"
+                                                    value={ this.state.catalogueCode }
+                                                    minLength={ 7 }
+                                                    maxLength={ 7 }
+                                                    onChange={ this.onChangeInput("catalogueCode") }
+                                                />
+                                                { this.state.catalogueCode.length !== 7 && (<small className="red-text">Kataloški broj mora imati tačno 7 karaktera</small>) }
                                             </Form.Group>
 
                                             <Form.Group>

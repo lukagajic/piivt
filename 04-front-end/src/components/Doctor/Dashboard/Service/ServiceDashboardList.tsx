@@ -133,6 +133,7 @@ export default class ServiceDashboardList extends BasePage<{}> {
                         <tr>
                             <th>Naziv</th>
                             <th>Opis</th>
+                            <th>Kataloški broj</th>
                             <th>Cena</th>
                             <th>Cena za decu</th>
                             <th>Cena za penzionere</th>
@@ -149,6 +150,9 @@ export default class ServiceDashboardList extends BasePage<{}> {
                                     </td>
                                     <td>
                                         { service.description }
+                                    </td>
+                                    <td>
+                                        { service.catalogueCode }
                                     </td>
                                     <td>
                                         { service.price } RSD
