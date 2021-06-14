@@ -1,6 +1,6 @@
 import BaseController from '../../common/BaseController';
 import * as express from 'express';
-import VisitModel from './model';
+import VisitModel, { VisitServiceRecord } from './model';
 import IErrorResponse from '../../common/IErrorResponse.inteface';
 import { IAddVisit, IAddVisitValidator } from './dto/AddVisit';
 import { IEditVisit, IEditVisitValidator } from './dto/EditVisit';
@@ -14,6 +14,11 @@ class VisitController extends BaseController {
     }
 
     async getAllActiveByPatientId(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+        
         const id: string = req.params.id;
 
         const patientId: number = +id;
@@ -21,6 +26,16 @@ class VisitController extends BaseController {
         if (patientId <= 0) {
             res.sendStatus(400);
             return;
+        }
+
+        const patientData = await this.services.patientService.getById(patientId);
+
+        if (patientData === null) {
+            return res.sendStatus(404);
+        }
+
+        if ((patientData as PatientModel).doctorId !== req.authorized.id) {
+            return res.status(403).send("Ovo nije vaš pacijent!");
         }
         
         res.send(await this.services.visitService.getAllActiveByPatientId(patientId, {
@@ -128,6 +143,11 @@ class VisitController extends BaseController {
     }
 
     async edit(req: express.Request, res: express.Response) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
         const id: number = +(req.params?.id);
 
         if (id <= 0) {
@@ -138,8 +158,27 @@ class VisitController extends BaseController {
             return res.status(400).send(IEditVisitValidator.errors);
         }
         
-        // Za sada cemo editorDoctorId hardkodovati dok ne implementiramo autentifikaciju i autorizaciju
-        const result = await this.services.visitService.edit(id, 1, req.body as IEditVisit);
+        const visitData: VisitModel | null | IErrorResponse = await this.services.visitService.getById(id);
+
+        if (visitData === null) {
+            return res.sendStatus(404);
+        }
+
+        if (!(visitData instanceof VisitModel)) {
+            return res.send(visitData);
+        }
+
+        for (const visitService of (req.body as IEditVisit).services) {
+            if (visitService.visitId !== (visitData as VisitModel).visitId) {
+                return res.status(400).send("Ne možete promeniti posetu");
+            }
+        }
+
+        if (visitData.doctorId !== req?.authorized.id) {
+            return res.status(403).send("Ovo nije vaša poseta!");
+        }
+
+        const result = await this.services.visitService.edit(id, req.authorized.id, req.body as IEditVisit);
 
         if (result === null) {
             return res.sendStatus(404);
@@ -149,6 +188,12 @@ class VisitController extends BaseController {
     }
 
     async deleteById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
+
         const id: number = +(req.params?.id);
 
         if (id <= 0) {
@@ -160,6 +205,10 @@ class VisitController extends BaseController {
         if (item === null) {
             res.sendStatus(404);
             return;
+        }
+
+        if ((item as VisitModel).doctorId !== req?.authorized.id) {
+            return res.status(403).send("Ovo nije vaša poseta!");
         }
 
         res.send(await this.services.visitService.deleteById(id));
