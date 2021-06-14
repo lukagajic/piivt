@@ -6,6 +6,8 @@ import ConfirmAction from '../../../Misc/ConfirmAction';
 import VisitModel from '../../../../../../03-back-end/src/components/visit/model';
 import VisitService from '../../../../services/VisitService';
 import ServiceService from '../../../../services/ServiceService';
+import PatientModel from '../../../../../../03-back-end/src/components/patient/model';
+import PatientService from '../../../../services/PatientService';
 
 class VisitDashboardListProperties extends BasePageProperties {
     match: {
@@ -16,6 +18,7 @@ class VisitDashboardListProperties extends BasePageProperties {
 }
 
 class VisitDashboardListState {
+    patient: PatientModel | null;
     visits: VisitModel[] = [];
     errorMessage: string = "";
     isDoctorLoggedIn: boolean = true;
@@ -32,6 +35,7 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
         super(props);
 
         this.state = {
+            patient: null,
             visits: [],
             errorMessage: "",
             isDoctorLoggedIn: true,
@@ -47,6 +51,7 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
     }
 
     componentDidMount() {
+        this.getPatient();
         this.getVisits();
         this.getServices();
 
@@ -55,6 +60,21 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
 
     componentWillUnmount() {
         EventRegister.off("AUTH_EVENT", this.authEventHandler.bind(this));
+    }
+
+    private getPatient() {
+        PatientService.getPatientById(this.getPatientId())
+            .then(data => {
+                if (data === null) {
+                    this.setState({
+                        errorMessage: "Nema podataka o pacijentu"
+                    })
+                }
+                this.setState({
+                    patient: data,
+                    errorMessage: ""
+                });
+            })
     }
 
     private getDeleteHandler(visitId: number) {
@@ -141,6 +161,10 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
             return <Redirect to="/doctor/login" />
         }
 
+        if (this.state.errorMessage.length > 0) {
+            return <p>{ this.state.errorMessage }</p>
+        }
+
         return(
             <>
                 {
@@ -153,9 +177,8 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
                     ): ""
                 }
 
-                { this.state.errorMessage.length > 0 && <p>{ this.state.errorMessage }</p> }
-
-                <h2>Spisak poseta</h2>
+                <h2>Karton pacijenta: { this.state.patient?.forename + " " + this.state.patient?.surname }</h2>
+                <h3>Sve posete</h3>
                 <Link className="btn btn-success" to={"/dashboard/patient/" + this.getPatientId() + "/visit/add"}>&#43; Nova poseta</Link>
                 
                 <p>{ this.state.visitDeleteMessage }</p>
