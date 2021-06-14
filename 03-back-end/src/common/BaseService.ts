@@ -79,6 +79,35 @@ export default abstract class BaseService<ReturnModel extends IModel> {
         });
     }
 
+    protected async getActiveByIdFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, id: number, options: Partial<AdapterOptions> = {}): Promise<ReturnModel | null | IErrorResponse> {
+        return new Promise<ReturnModel | null | IErrorResponse>(async resolve => {
+            const sql: string = `SELECT * FROM ${tableName} WHERE ${tableName}_id = ? AND is_active = 1;`;
+
+            this.db.execute(sql, [ id ])
+                .then(async result => {
+                    const [rows, columns] = result;
+
+                    if (!Array.isArray(rows)) {
+                        resolve(null);
+                        return;
+                    }
+        
+                    if (rows.length === 0) {
+                        resolve(null);
+                        return;
+                    }
+        
+                    resolve(await this.adaptModel(rows[0], options));
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });            
+        });
+    }
+
     protected async getByIdFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, id: number, options: Partial<AdapterOptions> = {}): Promise<ReturnModel | null | IErrorResponse> {
         return new Promise<ReturnModel | null | IErrorResponse>(async resolve => {
             const sql: string = `SELECT * FROM ${tableName} WHERE ${tableName}_id = ?;`;
@@ -135,6 +164,38 @@ export default abstract class BaseService<ReturnModel extends IModel> {
                             errorMessage: "Ovaj zapis ne postoji u bazi podataka!"
                         }); 
                     }
+                })
+                .catch(error => {
+                    resolve({
+                        errorCode: error?.errno,
+                        errorMessage: error?.sqlMessage
+                    });
+                });
+        });
+    }
+
+    protected async getAllActiveByFieldNameFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, fieldName: string, fieldValue: any, options: Partial<AdapterOptions> = {}): Promise<ReturnModel[] | IErrorResponse> {
+        return new Promise<ReturnModel[] | IErrorResponse>(async resolve => {
+            let sql: string = `SELECT * FROM ${tableName} WHERE ${fieldName} = ? AND is_active = 1;`;
+            
+            if (fieldValue === null) {
+                sql = `SELECT * FROM ${tableName} WHERE ${fieldName} IS NULL is_active = 1;`;
+            }
+
+            this.db.execute(sql, [ fieldValue ])
+                .then(async result => {
+                    const rows = result[0];
+
+                    const lista: ReturnModel[] = [];
+
+                    if (Array.isArray(rows)) {
+                        for (const row of rows) {
+                            lista.push(
+                                await this.adaptModel(row, options)
+                            );
+                        }
+                    }        
+                    resolve(lista);
                 })
                 .catch(error => {
                     resolve({

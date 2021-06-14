@@ -94,7 +94,7 @@ class ServiceService extends BaseService<ServiceModel> {
     }
 
     public async getAllByCategoryId(categoryId: number, options: Partial<ServiceModelAdapterOptions> = { }): Promise<ServiceModel[] | IErrorResponse> {
-        return await this.getAllByFieldNameFromTable("service", "category_id", categoryId, options);
+        return await this.getAllActiveByFieldNameFromTable("service", "category_id", categoryId, options);
     }
 
     public async add(data: IAddService, options: Partial<ServiceModelAdapterOptions> = {}): Promise<ServiceModel | IErrorResponse> {

@@ -37,7 +37,7 @@ class DoctorService extends BaseService<DoctorModel> {
         item.isActive = +(data?.is_active) === 1;
 
         if (options.loadPatients === true) {
-            item.patients = await this.services.patientService.getAllActiveByDoctorId(item.doctorId) as PatientModel[];
+            item.patients = await this.services.patientService.getAllByDoctorId(item.doctorId) as PatientModel[];
         }
 
         return item;

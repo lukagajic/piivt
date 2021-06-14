@@ -42,7 +42,7 @@ class CategoryService extends BaseService<CategoryModel> {
     }
 
     public async getById(categoryId: number, options: Partial<CategoryModelAdapterOptions> = { }): Promise<CategoryModel | null | IErrorResponse> {
-        return await this.getByIdFromTable<CategoryModelAdapterOptions>("category", categoryId, options);
+        return await this.getActiveByIdFromTable<CategoryModelAdapterOptions>("category", categoryId, options);
     }
 
     public async add(data: IAddCategory): Promise<CategoryModel | IErrorResponse > {

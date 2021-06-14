@@ -76,8 +76,15 @@ class VisitService extends BaseService<VisitModel> {
                 *
             FROM
                 visit_service
+            INNER JOIN
+                visit
+            ON
+                visit_service.visit_id = visit.visit_id
             WHERE
-                visit_service.visit_id = ?;`;
+                visit_service.visit_id = ?
+            AND
+                visit.is_active = 1
+            ;`;
         const [ rows ] = await this.db.execute(sql, [ visitId ]);
 
         if (!Array.isArray(rows) || rows.length === 0) {
