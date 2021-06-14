@@ -88,12 +88,14 @@ class Application extends Component {
     
     return (
       <BrowserRouter>
+      
         {
           (this.state.authorizedRole === "doctor" && window.location.pathname === "/") && <Redirect to="/dashboard/category" />
         }
         {
           (this.state.authorizedRole === "administrator" && window.location.pathname === "/") && <Redirect to="/administrator/dashboard/visit" />
         }
+
         <Container className="Application">
           <div className="Application-header">
               <img className="Application-logo" src="/logo.jpg" alt="E-medic Logo" />

@@ -4,9 +4,11 @@ import EventRegister from '../../../../api/EventRegister';
 import BasePage from '../../../BasePage/BasePage';
 import VisitService from '../../../../services/VisitService';
 import { Card, Col, Row } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 
 interface AdministratorVisitListState {
     visits: VisitModel[];
+    isAdminLoggedIn: boolean;
 }
 
 export default class AdministratorVisitList extends BasePage<{}> {
@@ -16,7 +18,8 @@ export default class AdministratorVisitList extends BasePage<{}> {
         super(props);
         
         this.state = {
-            visits: []
+            visits: [],
+            isAdminLoggedIn: true
         };
 
     }
@@ -33,12 +36,23 @@ export default class AdministratorVisitList extends BasePage<{}> {
     componentDidMount() {
         isRoleLoggedIn("administrator")
         .then(loggedIn => {
-            if (!loggedIn) return EventRegister.emit("AUTH_EVENT", "force_login");
+            if (!loggedIn) {
+                console.log('Not logged in!');
+                EventRegister.emit("AUTH_EVENT", "force_login");
+                this.setState({
+                    isAdminLoggedIn: false
+                });
+                return;
+            }
             this.getVisits();
         });
     }
 
     renderMain(): JSX.Element {
+        if(!this.state.isAdminLoggedIn) {
+            return <Redirect to="/administrator/logout" /> 
+        }
+
         if (this.state.visits.length === 0) return <h2>Nema poseta za pregled</h2>
         
         return (   
