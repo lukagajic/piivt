@@ -43,6 +43,10 @@ class PatientController extends BaseController {
         }
 
         if (data instanceof PatientModel) {
+            if (data.isActive === false) {
+                return res.status(404);
+            }
+
             if (data.doctorId !== req?.authorized.id) {
                 return res.status(403).send("Ovo nije vaš pacijent!");
             }
@@ -75,6 +79,11 @@ class PatientController extends BaseController {
     }
 
     async edit(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized?.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
         const id: string = req.params.id;
         const patientId: number = +id;
 
@@ -88,6 +97,16 @@ class PatientController extends BaseController {
         if (!IEditPatientValidator(data)) {
             res.status(400).send(IEditPatientValidator.errors);
             return;
+        }
+
+        const patientData = await this.services.patientService.getById(patientId);
+
+        if (patientData === null) {
+            return res.status(404).send(null);
+        }
+
+        if ((patientData as PatientModel).doctorId !== req.authorized.id) {
+            return res.status(403).send("Ovo nije vaš pacijent!");
         }
 
         const result: PatientModel | IErrorResponse = await this.services.patientService.edit(patientId, data as IEditPatient);

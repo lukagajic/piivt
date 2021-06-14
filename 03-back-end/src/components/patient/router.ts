@@ -36,14 +36,12 @@ export default class PatientRouter implements IRouter {
             patientController.add.bind(patientController)
         );
 
-        // TODO: PROVERITI U KONTROLERU DA LI PACIJENT PRIPADA DOKTORU
         application.put(
             "/patient/:id",
             AuthMiddleware.getVerifier("doctor"),
             patientController.edit.bind(patientController)
         );
-
-        // TODO: PROVERITI U KONTROLERU DA LI PACIJENT PRIPADA DOKTORU
+        
         application.delete(
             "/patient/:id",
             AuthMiddleware.getVerifier("doctor"),  
