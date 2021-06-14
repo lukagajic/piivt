@@ -10,13 +10,13 @@ export default class CategoryRouter implements IRouter {
 
         application.get(
             "/category",        
-            AuthMiddleware.getVerifier("administrator", "doctor"),
+            AuthMiddleware.getVerifier("doctor"),
             categoryController.getAll.bind(categoryController)
         );
 
-        application.get("/category/:id",    categoryController.getById.bind(categoryController));
-        application.post("/category",       categoryController.add.bind(categoryController));
-        application.put("/category/:id",    categoryController.edit.bind(categoryController));
-        application.delete("/category/:id", categoryController.deleteById.bind(categoryController));
+        application.get("/category/:id",    AuthMiddleware.getVerifier("doctor"), categoryController.getById.bind(categoryController));
+        application.post("/category",       AuthMiddleware.getVerifier("doctor"), categoryController.add.bind(categoryController));
+        application.put("/category/:id",    AuthMiddleware.getVerifier("doctor"), categoryController.edit.bind(categoryController));
+        application.delete("/category/:id", AuthMiddleware.getVerifier("doctor"), categoryController.deleteById.bind(categoryController));
     }
 }
