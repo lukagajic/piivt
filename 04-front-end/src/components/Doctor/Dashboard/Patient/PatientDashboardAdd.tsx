@@ -133,7 +133,6 @@ export default class PatientDashboardAdd extends BasePage<{}> {
 
         PatientService.addPatient(data)
         .then(res => {
-            console.log(res);
             if (res.success === false) {
                 this.setState({
                     message: res.message

@@ -57,7 +57,6 @@ export default class PatientDashboardEdit extends BasePage<PatientDashboardEditP
     }
 
     componentDidMount() {
-        console.log('mount');
         this.getGenders();
         this.getPatient()
         EventRegister.on("AUTH_EVENT", this.authEventHandler.bind(this));
@@ -168,7 +167,6 @@ export default class PatientDashboardEdit extends BasePage<PatientDashboardEditP
 
         PatientService.editPatient(this.getPatientId(), data)
         .then(res => {
-            console.log(res.success);
 
             if (res.success === false) {
                 return this.setState({

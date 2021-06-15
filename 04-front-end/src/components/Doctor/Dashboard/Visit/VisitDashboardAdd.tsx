@@ -130,7 +130,7 @@ export default class VisitDashboardAdd extends BasePage<VisitDashboardAddPropert
 
     private isFormValid(): boolean {               
          return this.state.activeVisitServices.every(vsr => vsr.serviceId !== 0 && vsr.description.length >= 2)
-         && new Date(this.state.visitedAt).getDate() >= (new Date().getDate());      
+         && new Date(this.state.visitedAt).getDate() <= (new Date().getDate());      
     }
 
     
@@ -184,7 +184,6 @@ export default class VisitDashboardAdd extends BasePage<VisitDashboardAddPropert
 
         VisitService.addVisit(data)
         .then(res => {
-            console.log('Stigao rezultat');
             if (res.success === false) {
                 this.setState({
                     message: res.message
@@ -257,7 +256,7 @@ export default class VisitDashboardAdd extends BasePage<VisitDashboardAddPropert
                                     <b>Nova poseta za pacijenta: { `${this.state.patient.forename} ${this.state.patient.surname}` }</b>
                                 </Card.Title>
                                 <Card.Text as="div" className="my-2">
-                                    <Link className="btn btn-success" to="/dashboard/service/">&#8592; Vratite se nazad</Link>  
+                                    <Link className="btn btn-success" to={"/dashboard/patient/" + this.state.patient.patientId + "/visit"}>&#8592; Vratite se nazad</Link>  
                                 </Card.Text>
                                 <Card.Text as="div">
                                     <h4>Detalji posete:</h4>
@@ -275,7 +274,7 @@ export default class VisitDashboardAdd extends BasePage<VisitDashboardAddPropert
                                                                 value={this.state.visitedAt}
                                                                 onChange = { this.onChangeInput(-1, "visitedAt") }
                                                             />
-                                                            { new Date(this.state.visitedAt).getDate() < (new Date().getDate()) && <small className="red-text">Datum posete ne može da bude u prošlosti !</small>}
+                                                            { new Date(this.state.visitedAt).getDate() > (new Date().getDate()) && <small className="red-text">Datum posete ne može da bude u budućnosti !</small>}
                                                         </Form.Group>
                                                     </Card.Text>
                                                 </Card.Body>

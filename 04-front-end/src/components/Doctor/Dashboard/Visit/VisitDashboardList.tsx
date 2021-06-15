@@ -161,10 +161,6 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
             return <Redirect to="/doctor/login" />
         }
 
-        if (this.state.errorMessage.length > 0) {
-            return <p>{ this.state.errorMessage }</p>
-        }
-
         return(
             <>
                 {
@@ -176,6 +172,8 @@ export default class VisitDashboardList extends BasePage<VisitDashboardListPrope
                             noHandler={ this.state.deleteDialogNoHandler } />
                     ): ""
                 }
+
+                { this.state.errorMessage.length > 0 && <p>{ this.state.errorMessage }</p>}
 
                 <h2>Karton pacijenta: { this.state.patient?.forename + " " + this.state.patient?.surname }</h2>
                 <h3>Sve posete</h3>

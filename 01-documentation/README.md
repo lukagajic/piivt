@@ -280,7 +280,7 @@ _Slika 20 - Prijava administratora na sistem_
 
 ##### 3.1.1.1. Pregled svih obavljenih poseta
 
-Nakon uspešnog prijavljivanja na sistem, administrator će biti preusmeren na stranicu sa prikazom svih obavljenih poseta, što je ujedno i jedina funkcionalnost koja je trenutno predviđena za ovu ulogu. Posete su prikazane u vidu kartica (1 poseta - 1 kartica) i sadrže osnovne informacije o poseti, pacijentu, pruženim uslugama i tome koji je status posete ("Aktivna" ili "Obrisana").
+Nakon uspešnog prijavljivanja na sistem, administrator će biti preusmeren na stranicu sa prikazom svih obavljenih poseta, što je ujedno i jedina funkcionalnost koja je trenutno predviđena za ovu ulogu. Posete su prikazane u vidu kartica (1 poseta - 1 kartica) i sadrže osnovne informacije o poseti, pacijentu, pruženim uslugama i tome koji je status posete ("Aktivna" ili "Obrisana"). Ukoliko je status "Obrisana", administrator neće moći da vidi pružene usluge dok se usluga ponovo ne aktivira.
 
 ![Sve posete](https://i.ibb.co/5880qRL/Sve-Posete-Admin.png, "Sve posete")
 _Slika 21 - Sve posete (administratorska uloga)_

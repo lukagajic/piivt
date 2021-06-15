@@ -130,7 +130,7 @@ class VisitService extends BaseService<VisitModel> {
                 WHERE
                     patient.is_active = 1
                 AND
-                    visit.is_active=  1
+                    visit.is_active = 1
                 AND
                     doctor.is_active = 1
                 AND
@@ -150,6 +150,8 @@ class VisitService extends BaseService<VisitModel> {
                         resolve(null);
                         return;
                     }
+
+                    
         
                     resolve(await this.adaptModel(rows[0], options));
                 })
@@ -288,7 +290,6 @@ class VisitService extends BaseService<VisitModel> {
             UPDATE
                 visit
             SET
-                description = ?,
                 editor__doctor_id = ?
             WHERE
                 visit_id = ?;
@@ -311,7 +312,6 @@ class VisitService extends BaseService<VisitModel> {
         `;
 
         if (vsr.visitServiceId !== 0) {
-            console.log('Ovde smo usli');
             sql = `
                 UPDATE
                     visit_service
@@ -397,7 +397,6 @@ class VisitService extends BaseService<VisitModel> {
                 })
                 .then(async () => {
                     for (const vsr of data.services) {
-                        console.log(vsr);
                         this.insertOrUpdateServiceRecord(vsr)
                         .catch(error => {
                             rollbackAndResolve({

@@ -206,6 +206,7 @@ export default abstract class BaseService<ReturnModel extends IModel> {
         });
     }
 
+
     protected async getAllByFieldNameFromTable<AdapterOptions extends IModelAdapterOptions>(tableName: string, fieldName: string, fieldValue: any, options: Partial<AdapterOptions> = {}): Promise<ReturnModel[] | IErrorResponse> {
         return new Promise<ReturnModel[] | IErrorResponse>(async resolve => {
             let sql: string = `SELECT * FROM ${tableName} WHERE ${fieldName} = ?;`;

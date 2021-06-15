@@ -2,7 +2,6 @@ import Ajv from "ajv";
 
 interface IEditAdministrator {
     password: string;
-    isActive: boolean;
 }
 
 const ajv = new Ajv();
@@ -15,13 +14,9 @@ const IEditAdministratorValidator = ajv.compile({
             minLength: 6,
             maxLength: 255,
         },
-        isActive: {
-            type: "boolean",
-        }
     },
     required: [
-        "password",
-        "isActive",
+        "password"
     ],
     additionalProperties: false
 });

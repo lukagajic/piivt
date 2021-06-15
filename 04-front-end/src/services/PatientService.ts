@@ -68,7 +68,6 @@ export default class PatientService {
         return new Promise<IResult>(resolve => {
             api("post", "/patient", "doctor", data)
             .then(res => {
-                console.log("RES: ", res);
                 if (res?.status === "error") {
                     if (Array.isArray(res?.data?.data)) {
                         const field = res?.data?.data[0]?.instancePath.replace('/', '');

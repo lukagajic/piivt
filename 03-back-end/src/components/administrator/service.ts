@@ -83,15 +83,13 @@ class AdministratorService extends BaseService<AdministratorModel> {
                 UPDATE
                     administrator
                 SET
-                    password_hash = ?,
-                    is_active = ?
+                    password_hash = ?
                 WHERE
                     administrator_id = ?;
             `;
             
             this.db.execute(sql, [ 
                 bcrypt.hashSync(data.password, 11),
-                data.isActive,
                 administratorId
             ])
             .then(async result => {
@@ -111,7 +109,7 @@ class AdministratorService extends BaseService<AdministratorModel> {
     }
 
     public async getByUsername(username: string, options: Partial<AdministratorModelAdapterOptions> = {}): Promise<AdministratorModel | null> {
-        const administrators = await this.getAllByFieldNameFromTable("administrator", "username", username, options);
+        const administrators = await this.getAllActiveByFieldNameFromTable("administrator", "username", username, options);
 
         if (!Array.isArray(administrators) || administrators.length === 0) {
             return null;

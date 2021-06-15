@@ -10,6 +10,7 @@ export default class PatientRouter implements IRouter {
 
         application.get(
             "/patient/gender",
+            AuthMiddleware.getVerifier("doctor"),
             patientController.getAllGenderValues.bind(patientController)
         );
 
@@ -20,13 +21,8 @@ export default class PatientRouter implements IRouter {
         );
 
         application.get(
-            "/patient",
-            patientController.getAll.bind(patientController)
-        );
-
-        application.get(
             "/patient/:id",
-            AuthMiddleware.getVerifier("doctor"),
+            AuthMiddleware.getVerifier("doctor", "administrator"),
             patientController.getById.bind(patientController)
         );
 
@@ -46,6 +42,12 @@ export default class PatientRouter implements IRouter {
             "/patient/:id",
             AuthMiddleware.getVerifier("doctor"),  
             patientController.deleteById.bind(patientController)
+        );
+
+        application.get(
+            "/patient",
+            AuthMiddleware.getVerifier("administrator"),
+            patientController.getAll.bind(patientController)
         );
     }
 }

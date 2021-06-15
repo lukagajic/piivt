@@ -55,7 +55,7 @@ class DoctorService extends BaseService<DoctorModel> {
     }
 
     public async getByEmail(email: string, options: Partial<DoctorModelAdapterOptions> = { }): Promise<DoctorModel | null> {
-        const doctors: DoctorModel[] | IErrorResponse = await this.getAllByFieldNameFromTable<DoctorModelAdapterOptions>("doctor", "email", email, options);
+        const doctors: DoctorModel[] | IErrorResponse = await this.getAllActiveByFieldNameFromTable<DoctorModelAdapterOptions>("doctor", "email", email, options);
         
         if (!Array.isArray(doctors) || doctors.length === 0) {
             return null;
@@ -81,7 +81,7 @@ class DoctorService extends BaseService<DoctorModel> {
                     phone_number = ?
                 ON DUPLICATE KEY
                 UPDATE
-                    is_active = 1'
+                    is_active = 1;
             `;
 
             this.db.execute(sql, [

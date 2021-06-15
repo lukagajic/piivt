@@ -57,7 +57,6 @@ export default class VisitDashboardEdit extends BasePage<VisitDashboardEditPrope
     private getServices() {
         ServiceService.getAll()
             .then(services => {
-                console.log(services);
                 if (services.length === 0) {                   
                     return this.setState({
                         services: [],
@@ -245,7 +244,7 @@ export default class VisitDashboardEdit extends BasePage<VisitDashboardEditPrope
                                     <b>Izmena posete</b>
                                 </Card.Title>
                                 <Card.Text as="div" className="my-2">
-                                    <Link className="btn btn-success" to="/dashboard/service/">&#8592; Vratite se nazad</Link>  
+                                    <Link className="btn btn-success" to={"/dashboard/patient/" + this.state.visit.patientId + "/visit"}>&#8592; Vratite se nazad</Link>  
                                 </Card.Text>
                                 <Card.Text as="div">
                                     <h4>Usluge:</h4>

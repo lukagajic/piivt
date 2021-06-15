@@ -102,7 +102,6 @@ export default class VisitService {
         return new Promise<IResult>(resolve => {
             api("post", "/visit", "doctor", data)
             .then(res => {
-                console.log("RES: ", res);
                 if (res?.status === "error") {
                     if (Array.isArray(res?.data?.data)) {
                         const field = res?.data?.data[0]?.instancePath.replace('/', '');
@@ -126,7 +125,6 @@ export default class VisitService {
         return new Promise<boolean>(resolve => {
             api("delete", "/visit/" + visitId, "doctor")
             .then(res => {
-                console.log(res);
                 if (res.status !== "ok") return resolve(false);
                 if (res.data?.errorCode !== 0) return resolve(false);
                 resolve(true);

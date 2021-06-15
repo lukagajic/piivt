@@ -137,7 +137,7 @@ class PatientService extends BaseService<PatientModel> {
                     personal_identity_number = ?,
                     phone_number = ?,
                     address = ?,
-                    doctor_id = ?;
+                    doctor_id = ?
                 ON DUPLICATE KEY
                 UPDATE
                     is_active = 1;
@@ -156,7 +156,7 @@ class PatientService extends BaseService<PatientModel> {
              ])
                 .then(async result => {
                     const insertInfo: any = result[0];
-                    
+
                     const newPatientId: number = +(insertInfo?.insertId);
                     resolve(await this.getById(newPatientId));
                 })

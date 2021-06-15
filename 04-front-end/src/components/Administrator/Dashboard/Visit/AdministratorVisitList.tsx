@@ -37,7 +37,6 @@ export default class AdministratorVisitList extends BasePage<{}> {
         isRoleLoggedIn("administrator")
         .then(loggedIn => {
             if (!loggedIn) {
-                console.log('Not logged in!');
                 EventRegister.emit("AUTH_EVENT", "force_login");
                 this.setState({
                     isAdminLoggedIn: false

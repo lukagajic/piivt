@@ -49,6 +49,11 @@ class VisitController extends BaseController {
     }
 
     async getActiveById(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (!req.authorized.id) {
+            res.status(403).send("Nema identifikatora!");
+            return;
+        }
+
         const id: string = req.params.id;
 
         const visitId: number = +id;
@@ -71,6 +76,11 @@ class VisitController extends BaseController {
         }
 
         if (data instanceof VisitModel) {
+            if (req?.authorized.role === "doctor" && data.doctorId !== req?.authorized.id) {
+                res.status(403).send("Ovo nije vaša poseta!");
+                return;
+            }
+
             res.send(data);
             return;
         }

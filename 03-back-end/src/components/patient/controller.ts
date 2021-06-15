@@ -47,7 +47,7 @@ class PatientController extends BaseController {
                 return res.status(404);
             }
 
-            if (data.doctorId !== req?.authorized.id) {
+            if (req.authorized.role === "doctor" && data.doctorId !== req?.authorized.id) {
                 return res.status(403).send("Ovo nije vaš pacijent!");
             }
 
