@@ -6,7 +6,7 @@ import CategoryService from '../../../../services/CategoryService';
 import ServiceModel from '../../../../../../03-back-end/src/components/service/model';
 import VisitService, { IEditVisit } from '../../../../services/VisitService';
 import VisitModel, { VisitServiceRecord } from '../../../../../../03-back-end/src/components/visit/model';
-import ServiceService from '../../../../services/ServiceService';
+import ServiceService from '../../../../services/ServiceService'
 
 
 class VisitDashboardEditProperties extends BasePageProperties {
@@ -57,6 +57,7 @@ export default class VisitDashboardEdit extends BasePage<VisitDashboardEditPrope
     private getServices() {
         ServiceService.getAll()
             .then(services => {
+                console.log(services);
                 if (services.length === 0) {                   
                     return this.setState({
                         services: [],
