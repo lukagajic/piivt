@@ -92,11 +92,11 @@ _Slika 1 - Opšti dijagram slučajeva korišćenja_
 
 ## 2. Reference
 
-[1] "Веб прегледач", [Online], https://sr.wikipedia.org/sr/%D0%92%D0%B5%D0%B1-%D0%BF%D1%80%D0%B5%D0%B3%D0%BB%D0%B5%D0%B4%D0%B0%D1%87
-[2] "Access Control", [Online], https://en.wikipedia.org/wiki/Access_control#Computer_security
-[3] "Express documentation", [Online], https://expressjs.com/
-[4] "TypeScript documentation", [Online], https://www.typescriptlang.org/
-[5] "React documentation", [Online], https://reactjs.org/
+- [1] "Веб прегледач", [Online], https://sr.wikipedia.org/sr/%D0%92%D0%B5%D0%B1-%D0%BF%D1%80%D0%B5%D0%B3%D0%BB%D0%B5%D0%B4%D0%B0%D1%87
+  -- [2] "Access Control", [Online], https://en.wikipedia.org/wiki/Access_control#Computer_security
+- [3] "Express documentation", [Online], https://expressjs.com/
+- [4] "TypeScript documentation", [Online], https://www.typescriptlang.org/
+- [5] "React documentation", [Online], https://reactjs.org/
 
 ## 3. Specifikacija zahteva
 
