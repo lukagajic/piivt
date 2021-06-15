@@ -28,7 +28,7 @@ const Config: IConfig = {
             algorithm: "RS256",
             issuer: "localhost",
             auth: {
-                duration: 60 * 60 * 24 * 7, // 60 * 60 * 24 * 7, // Samo dok radimo razvoj
+                duration: 60 * 2, // 60 * 60 * 24 * 7, // Samo dok radimo razvoj
                 public: readFileSync("keystore/user-auth.public", "utf-8"),
                 private: readFileSync("keystore/user-auth.private", "utf-8")
             },
