@@ -1,9 +1,3 @@
-# Projekat iz predmeta "Praktikum - Internet i veb tehnologije" - 2020/2021.
-
-## Sadržaj spremišta
-
-Ovde se nalazi projekat za predmet Praktikum - Internet i veb tehnologije - 2020/2021
-
 ## Struktura spremišta
 
 - U direktorijumu [01-documentation](./01-documentation) se nalazi dokumentacija...
