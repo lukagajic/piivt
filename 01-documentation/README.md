@@ -1,10 +1,4 @@
 # Projektni zahtev - Veb aplikacija za privatnu kliniku
-
-Kada se importuje SQL fajl ovog projekta, možete se prijaviti pomoću postojećih naloga u bazi podataka:
-
-- Za administratore uzmite username iz baze podataka, a lozinka je ista kao i username
-- Za doktore uzmite e-mail iz baze podataka, a lozinka za svakog doktora je: 12345678
-
 ## 1. Uvod
 
 _Veb aplikacija za privatnu kliniku_ kao cilj ima da stručnom i administrativnom osoblju jedne privatne klinike pruži mogućnost elektronskog upravljanja kartonima svojih prijavljenih pacijenata. Ideja je da se sistem realizuje kao Veb aplikacija [1], kojoj se može pristupiti preko Veb čitača [2], koja će skladištiti sve neophodne podatke u relacionoj bazi podataka [3] koja će takođe biti aktivna na serveru. Ono što će aplikacija omogućiti osoblju klinike jeste upravljanje svim podacima vezanim za kateogorije usluga i same usluge koja klinika pruža svojim pacijentima, jasan i kompletan prikaz informacija svakog pacijenta i svih njegovih poseta klinici sa popisom usluga koje su mu tada pružene i izračunatom cenom usluga, zavisno od toga kom starosnom dobu pripada pacijent.
