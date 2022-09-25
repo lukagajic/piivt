@@ -1,11 +1,5 @@
 # Projektni zahtev - Veb aplikacija za privatnu kliniku
 
-- **Student:** Luka Gajić, IR, 201720046
-- **Predmetni profesor:** prof. dr Vladislav Miškovic
-- **Predmetni asistent:** Milan Tair, master
-
-## Pre početka dokumentacije
-
 Kada se importuje SQL fajl ovog projekta, možete se prijaviti pomoću postojećih naloga u bazi podataka:
 
 - Za administratore uzmite username iz baze podataka, a lozinka je ista kao i username
